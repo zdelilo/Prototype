@@ -3,16 +3,15 @@ import java.util.HashMap;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+/**
+ * @author CodeFather
+ * Abstract Parent User Class
+ * Each user has a | Username | Password | UserGUI |
+ */
 public abstract class User {
 
 	String username;
 	String password;
-	String inputUsername;
-	String inputPassword;
-	JTextField usernameFLD;
-	JTextField passwordFLD;
-	JLabel tryAgain;
-	
 	
 	static HashMap<String,User> users = new HashMap<String,User>();
 	

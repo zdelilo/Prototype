@@ -2,7 +2,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-	/**Represents a Race Panel**/
+	/**
+	 * @author CodeFather
+	 * Race Panel - used to create panels that hold races and candidates
+	 */
 	public class RacePanel{
         	
        	 public JPanel race;

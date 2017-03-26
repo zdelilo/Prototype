@@ -14,6 +14,10 @@ import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
+/**
+ * @author CodeFather
+ * Creates ballet given input from Ballot Prompt
+ */
 public class Ballot extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
@@ -26,7 +30,10 @@ public class Ballot extends JFrame implements ActionListener{
         ArrayList<ButtonGroup> selectedCandidates = new ArrayList<ButtonGroup>();
         ArrayList<String> raceGroup = new ArrayList<String>();
 
-        /**Creates ballot from input of ballot **/
+       
+	    /**
+	     * Constructor - Ballot GUI
+	     */
 	    Ballot(){
 	    		
 	    	 confirm = new JButton("Confirm");
@@ -51,7 +58,10 @@ public class Ballot extends JFrame implements ActionListener{
 	        
 	    }
 	    
-	    /**Given a Race Panel**/
+	    /**
+	     * Adds a race panel to Ballot GUI
+	     * @param p - Race Panel
+	     */
 	    public void addBallot(RacePanel p){
 	    	 ButtonGroup btnRadioGroup = new ButtonGroup();
 	    	 JPanel race = p.race;
@@ -87,6 +97,10 @@ public class Ballot extends JFrame implements ActionListener{
 	    	   selectedCandidates.add(btnRadioGroup);
 	    }
 	    
+	    /**
+	     * Adds Finish Button to Ballot GUI
+	     * TODO - Export ballot to server
+	     */
 	    public void finishBallot(){
 	    	/**Addds components to main layout**/
  		   layout.setHorizontalGroup(layout.createSequentialGroup()

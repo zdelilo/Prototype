@@ -1,4 +1,8 @@
 
+/**
+ * @author CodeFather
+ * Child User Class for Student | UserGUI Ballot | 
+ */
 public class Student extends User{
 
 	Student(String username, String password) {

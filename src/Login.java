@@ -14,6 +14,11 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
+/**
+ * @author CodeFather
+ * Login GUI for all users
+ * Validates user login | Brings up UserGUI given validLogin |
+ */
 public class Login extends JFrame implements ActionListener{
 	String inputUsername;
 	String inputPassword;
@@ -40,11 +45,14 @@ public class Login extends JFrame implements ActionListener{
 		/**Login GUI Components**/
 		 usernameFLD = new JTextField("Jane Doe",20);
 		 passwordFLD = new JTextField("********",20);
+		 
 		JLabel userLabel = new JLabel("Username: ");
 		JLabel passLabel = new JLabel("Password: ");
+		
 		JLabel myVoteLabel = new JLabel("MyVote Login: ");
-		tryAgain = new JLabel();
 		JButton login = new JButton("Login");
+		tryAgain = new JLabel();
+		
 		
 		/**Adding componets to Panels**/
 		mainPanel.setBackground(MyColors.deepBlue);
@@ -100,10 +108,24 @@ public class Login extends JFrame implements ActionListener{
         this.getRootPane().setDefaultButton(login);
 	}
 
+	 /**
+	 * Validates User
+	 * @return true |Checks if user is contained within database &&
+	 * 			    |Checks if password of user matches the inputted password
+	 * @return false| user not within data base || inputted password does not match 
+	 * **/
 	public boolean validLogin(){
 		
 		return (users.containsKey(inputUsername) && inputPassword.equals(users.get(inputUsername).password));
 	}
+	
+	/**
+	* Action Preformed Method - Checks what buttons have been pressed
+	* @param e - Action event (actions enacted )
+	* |Login - Grabs inputted username and password and checks if valid login
+	* 		|Valid - The user's GUI is brought up
+	* 		|Invalid - User is prompted to try again
+	* **/
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("login")){
 			inputUsername = usernameFLD.getText();
@@ -112,7 +134,6 @@ public class Login extends JFrame implements ActionListener{
 			
 			if(validLogin())
 				user.UserGUI();
-			
 			else
 				tryAgain.setText("Incorrect username of password. Please Try Again");
 		}

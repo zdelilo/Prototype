@@ -1,4 +1,8 @@
 
+/**
+ * @author CodeFather
+ * Child User Class for OIT | UserGUI OITInterface |	
+ */
 public class OIT extends User{
 	
 	OIT(String username, String password) {
