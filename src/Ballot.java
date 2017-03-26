@@ -15,7 +15,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
 /**
- * @author CodeFather 0
+ * @author CodeFather 
  * Creates ballet given input from Ballot Prompt
  */
 public class Ballot extends JFrame implements ActionListener{

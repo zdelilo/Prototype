@@ -1,6 +1,6 @@
 
 /**
- * @author CodeFather
+ * @author CodeFather 
  * Child User class for Election Commissioner
  * User GUI | BallotPrompt |
  */

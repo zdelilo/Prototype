@@ -4,7 +4,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
- * @author CodeFather
+ * @author CodeFather 
  * Abstract Parent User Class
  * Each user has a | Username | Password | UserGUI |
  */

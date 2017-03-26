@@ -1,6 +1,6 @@
 
 /**
- * @author CodeFather
+ * @author CodeFather 
  * Child User Class for Student | UserGUI Ballot | 
  */
 public class Student extends User{

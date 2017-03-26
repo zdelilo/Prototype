@@ -15,7 +15,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
 /**
- * @author CodeFather
+ * @author CodeFather 
  * Login GUI for all users
  * Validates user login | Brings up UserGUI given validLogin |
  */

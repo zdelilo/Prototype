@@ -13,7 +13,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
 /**
- * @author CodeFather
+ * @author CodeFather 
  * Election Commissioner GUI for creating Ballots
  */
 public class BallotPrompt extends JFrame implements ActionListener {
