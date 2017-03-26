@@ -1,7 +1,7 @@
 
 /**
  * @author CodeFather 
- * Child User class for Election Commissioner
+ * Child User class for Election Commissioner 
  * User GUI | BallotPrompt |
  */
 public class ElectionCommissioner extends User{

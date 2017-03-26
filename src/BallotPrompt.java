@@ -14,7 +14,7 @@ import javax.swing.border.LineBorder;
 
 /**
  * @author CodeFather 
- * Election Commissioner GUI for creating Ballots
+ * Election Commissioner GUI for creating Ballots 
  */
 public class BallotPrompt extends JFrame implements ActionListener {
 
