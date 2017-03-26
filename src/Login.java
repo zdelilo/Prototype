@@ -51,7 +51,13 @@ public class Login extends JFrame implements ActionListener{
 		
 		JLabel myVoteLabel = new JLabel("MyVote Login: ");
 		JButton login = new JButton("Login");
+		login.setIcon(MyImages.smileIcon);
+		login.setIconTextGap(10);
 		tryAgain = new JLabel();
+		tryAgain.setText("Incorrect username of password. Please Try Again...");
+		tryAgain.setIcon(MyImages.frownIcon);
+		tryAgain.setVisible(false);
+		
 		
 		
 		/**Adding componets to Panels**/
@@ -135,7 +141,7 @@ public class Login extends JFrame implements ActionListener{
 			if(validLogin())
 				user.UserGUI();
 			else
-				tryAgain.setText("Incorrect username of password. Please Try Again");
+				tryAgain.setVisible(true);
 		}
 	}
 	public static void main(String[]args){

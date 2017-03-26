@@ -6,4 +6,5 @@ public class MyImages {
     static ImageIcon sendIcon = new ImageIcon("send.jpg");
     static ImageIcon codeFather = new ImageIcon("codeFather.png");
     static ImageIcon smileIcon = new ImageIcon("smile.png");
+    static ImageIcon frownIcon = new ImageIcon("frown.png");
 }
