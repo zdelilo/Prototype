@@ -1,11 +1,14 @@
 
 public class Student extends User{
 
-	private static final long serialVersionUID = -5692261475228627274L;
-
 	Student(String username, String password) {
 		super(username, password);
 		
+	}
+
+	public void UserGUI() {
+		//TODO add Student GUI
+		System.out.println("NO STUDENT GUI");
 	}
 
 }
