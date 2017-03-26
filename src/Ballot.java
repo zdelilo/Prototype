@@ -17,7 +17,7 @@ import javax.swing.border.LineBorder;
 /**
  * @author CodeFather 
  * Creates ballet given input from Ballot Prompt 
- */
+ */ 
 public class Ballot extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
