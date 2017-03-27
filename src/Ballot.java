@@ -1,8 +1,10 @@
 import java.awt.Color;     
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -71,7 +73,7 @@ public class Ballot extends JFrame implements ActionListener{
 	    	 raceGroup.add(p.race_title);
 	      	 String[] candidates = p.candidate_names;
 	      	 int num_candidates  = candidates.length;
-	      	
+	
 	    	   for(int i = 0; i < num_candidates;i++){
 	    		   JRadioButton cand = new JRadioButton(candidates[i]);
 	    		   cand.setActionCommand(candidates[i]);

@@ -12,7 +12,7 @@ public class HSO extends User{
 
 	public void UserGUI() {
 		//TODO add HSO GUI
-		System.out.println("NO STUDENT GUI");
+		System.out.println("NO HSO GUI");
 	}
 
 }

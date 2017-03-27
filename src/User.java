@@ -11,10 +11,7 @@ import javax.swing.JTextField;
 public abstract class User {
 
 	String username;
-	String password;
-	
-	static HashMap<String,User> users = new HashMap<String,User>();
-	
+	String password;	
 	
 	User(String username, String password){
 		this.username = username;

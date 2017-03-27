@@ -26,15 +26,9 @@ public class Login extends JFrame implements ActionListener{
 	JTextField usernameFLD;
 	JTextField passwordFLD;
 	JLabel tryAgain;
-
-	HashMap<String,User> users = new HashMap<String,User>();
 	
 	 Login(){
-		 
-		 	users.put("Rnkambara", new ElectionCommissioner("Rnkambara","helloworld"));
-			users.put("Jjkambara", new Student("Jjkambara","hellokitty"));
-			users.put("Dapatrick", new HSO ("Dapatrick","jessica"));
-		 
+
 		JPanel mainPanel = new JPanel(new GridBagLayout());		
 	    JPanel tablePanel = new JPanel(new GridBagLayout());
 	    GridBagConstraints c = new GridBagConstraints();
@@ -57,8 +51,6 @@ public class Login extends JFrame implements ActionListener{
 		tryAgain.setText("Incorrect username of password. Please Try Again...");
 		tryAgain.setIcon(MyImages.frownIcon);
 		tryAgain.setVisible(false);
-		
-		
 		
 		/**Adding componets to Panels**/
 		mainPanel.setBackground(MyColors.deepBlue);
@@ -122,7 +114,7 @@ public class Login extends JFrame implements ActionListener{
 	 * **/
 	public boolean validLogin(){
 		
-		return (users.containsKey(inputUsername) && inputPassword.equals(users.get(inputUsername).password));
+		return (MyVoteServer.users.containsKey(inputUsername) && inputPassword.equals(MyVoteServer.users.get(inputUsername).password));
 	}
 	
 	/**
@@ -136,7 +128,7 @@ public class Login extends JFrame implements ActionListener{
 		if(e.getActionCommand().equals("login")){
 			inputUsername = usernameFLD.getText();
 			inputPassword = passwordFLD.getText();
-			user = users.get(inputUsername);
+			user = MyVoteServer.users.get(inputUsername);
 			
 			if(validLogin())
 				user.UserGUI();
@@ -145,6 +137,7 @@ public class Login extends JFrame implements ActionListener{
 		}
 	}
 	public static void main(String[]args){
+		new API();
 		new Login();
 	}
 }
