@@ -11,7 +11,6 @@ public class Student extends User{
 	}
 
 	public void UserGUI() {
-		//TODO add Student GUI
 		System.out.println("NO STUDENT GUI");
 	}
 

@@ -5,7 +5,14 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -24,23 +31,46 @@ public class Ballot extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
-		JButton confirm;     
+		JButton confirm; 
+		JButton finish;
         /**Layout and ButtonGroup Components**/
         JPanel panelMain = new JPanel();
-        GroupLayout layout = new GroupLayout(panelMain);	 
-       
+        GroupLayout layout = new GroupLayout(panelMain);
+        
+        /**Collections**/
         ArrayList<ButtonGroup> selectedCandidates = new ArrayList<ButtonGroup>();
         ArrayList<String> raceGroup = new ArrayList<String>();
-
+        ArrayList<RacePanel> panels = new ArrayList<RacePanel>();
+        List<String> candidates;
+        HashMap<String,List<String>> raceCands = new HashMap<String,List<String>>() ;
+        
+        /**Server Stuff**/
+    	ObjectInputStream brIn;
+    	ObjectOutputStream pwOut;	
+    	Socket sock;
        
 	    /**
 	     * Constructor - Ballot GUI
 	     */
 	    Ballot(){
-	    		
+	    	
+	   	 /**Initialzies Server**/  	
+	    	try {
+				sock = new Socket("127.0.0.1",50000);
+				pwOut = new ObjectOutputStream(sock.getOutputStream());
+				brIn = new ObjectInputStream(sock.getInputStream());    	
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+		
 	    	 confirm = new JButton("Confirm");
 	    	 confirm.setActionCommand("confirm");
 	    	 confirm.addActionListener(this);
+	    	 
+	    	 finish = new JButton("Finish");
+	         finish.setActionCommand("finish");
+	         finish.addActionListener(this);
 	    	
 	    	/**Default values for Main Panel | Color | Size | Icon | Title | **/
 	        panelMain.setBackground(MyColors.deepBlue);
@@ -57,32 +87,66 @@ public class Ballot extends JFrame implements ActionListener{
 	        int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
 	        setLocation(x, y);
 	        setVisible(true);
-	        
 	    }
 	    
 	    /**
 	     * Adds a race panel to Ballot GUI
 	     * @param p - Race Panel
+	     * retrieves all ballot information from RacePanel
+	     * 		| race_title | candidates |
 	     */
 	    public void addBallot(RacePanel p){
+	    	
+	    	/**panels - acts as storage for a "ballot"
+	    	 | holds all necessary components to re-create ballot |
+	    	 * Adds every ballot race panel to panel array**/
+	    	 panels.add(p);
+
+	    	 
 	    	 ButtonGroup btnRadioGroup = new ButtonGroup();
 	    	 JPanel race = p.race;
+	    	 
+	    	 /**Making pretty panels....**/
 	    	 race.setBackground(MyColors.seaGreen);
 	    	 race.setBorder(new LineBorder(Color.white,3));
 	    	 race.add(new JLabel(p.race_title));
+	    	 
+	    	 /**holds all race titles**/
 	    	 raceGroup.add(p.race_title);
-	      	 String[] candidates = p.candidate_names;
-	      	 int num_candidates  = candidates.length;
-	
-	    	   for(int i = 0; i < num_candidates;i++){
-	    		   JRadioButton cand = new JRadioButton(candidates[i]);
-	    		   cand.setActionCommand(candidates[i]);
+	    	 
+	    	 /**retrieves current list of candidates (for current race)**/
+	    	 candidates = p.candidate_names;
+	    	 
+	    	 /**Adds to hashmap of [race = {candidates}]
+	    	  * ultimate goal - assist in retrieving index of candidate 
+	    	  * to tally**/
+	    	 raceCands.put(p.race_title, candidates);
+	    	 
+	      	 int num_candidates  = candidates.size();
+
+	      	 /**<<<SERVER CONNECTOIN ADDRACE>>>
+	      	  * sends <addRace> command to server
+	      	  * ultimate goald | update the candidates voting array |
+	      	  * **/
+	      	try {
+	 	    	pwOut.writeObject("<addRace>");
+	 	    	pwOut.writeObject(p.race_title);
+	 	    	pwOut.writeObject(candidates);
+			} catch (IOException j) {
+				
+				j.printStackTrace();
+			}
+	      	 
+	      	for(int i = 0; i < num_candidates;i++){
+	    		   JRadioButton cand = new JRadioButton(candidates.get(i));
+	    		   cand.setActionCommand(candidates.get(i));
 	    		   cand.setBackground(Color.white);
 	    		   
-	    		  
+	    		   /**Adds candidates to button group
+	    		    * (only allows for selection of one candidate)**/
 	    		   btnRadioGroup.add(cand);
 	    		   p.addButton(cand);
-	    		   p.button.setText(candidates[i]);
+	    		   p.button.setText(candidates.get(i));
 	    		   p.button.setVisible(true);
 	    		   
 	    		   /**Addds components to main layout**/
@@ -101,31 +165,77 @@ public class Ballot extends JFrame implements ActionListener{
 	    
 	    /**
 	     * Adds Finish Button to Ballot GUI
-	     * TODO - Export ballot to server
+	     * saves ballot to server
 	     */
 	    public void finishBallot(){
 	    	/**Addds components to main layout**/
  		   layout.setHorizontalGroup(layout.createSequentialGroup()
 	        			  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 	        					  .addComponent(confirm)
+	        					  .addComponent(finish)
 	        					  ));
    	 	    layout.setVerticalGroup(
    	 	            layout.createParallelGroup()
    	 	                .addGroup(layout.createSequentialGroup())
    	 	                    .addComponent(confirm)
+   	 	                    .addComponent(finish)
    	 	                    ); 
+   	 	    
+   	 	    /**
+   	 	  	  * <<<SERVER CONNECTOIN  <saveballot> >>>
+	      	  * saves completed ballot components to server
+	      	  * **/    
+   	 	    try {
+	 	    	pwOut.writeObject("<saveballot>");
+				pwOut.writeObject(panels);
+			
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+  
 	    }
 	    
 	    public void actionPerformed(ActionEvent e){
-	    	if(e.getActionCommand().equals("confirm"))
 	    	
-	    	for(int i = 0; i < raceGroup.size();i++)	
-	    		System.out.println(
-	    				raceGroup.get(i) + " Winner!\n" +
-	    				selectedCandidates.get(i).getSelection().getActionCommand()
-	    				);
-	    }
+	    	/**Confirms completed submission
+	    	 * exits server and system**/
+	    	if(e.getActionCommand().equals("finish"))
+				try {
+					pwOut.writeObject("<shutdown>");
+					System.exit(0);
+				} catch (IOException e1) {
+					
+					e1.printStackTrace();
+				}
+	    	
+	    	
+	    	/**Sends vote to server**/
+	    	if(e.getActionCommand().equals("confirm"))
+	    	for(int i = 0; i < raceGroup.size();i++){
+	    		
+	    		String race = raceGroup.get(i);
+	    		String selected = selectedCandidates.get(i).getSelection().getActionCommand();
+	    		
 
+	   	 	    /**
+	   	 	  	  * <<<SERVER CONNECTOIN  <vote> >>>
+		      	  * saves user's candidate vote to server
+		      	  * **/  	
+	    		try {
+		 	    	pwOut.writeObject("<vote>");
+		 	    	pwOut.writeObject(race);
+					pwOut.writeObject(raceCands.get(race).indexOf(selected));
+				} catch (IOException j) {
+					
+					j.printStackTrace();
+				}
+
+	    		System.out.println(race + " " + selected);
+	    		
+	    	}
+	    }
+	 
+	    
 	    public static void main(String args[]){
 	    	
 	    }	

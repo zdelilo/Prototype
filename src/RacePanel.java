@@ -1,3 +1,5 @@
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -6,12 +8,12 @@ import javax.swing.JRadioButton;
 	 * @author CodeFather 
 	 * Race Panel - used to create panels that hold races and candidates
 	 */
-	public class RacePanel{
+	public class RacePanel implements java.io.Serializable{
         	
-       	 public JPanel race;
+       	 public transient  JPanel race;
        	 public String race_title;
-       	 public JRadioButton button;
-       	 public String[] candidate_names;
+       	 public transient JRadioButton button;
+       	 public List<String> candidate_names;
        	 
        	 /**
        	  * Constructor for Race Panel
@@ -19,7 +21,7 @@ import javax.swing.JRadioButton;
        	  * @param race_title - Title for race
        	  * @param candidates - String array | holds names of candidates
        	  **/
-       	 RacePanel(JPanel panel, String race_title, String[] candidates){
+       	 RacePanel(JPanel panel, String race_title, List<String>  candidates){
        		 this.race = panel;
        		 this.race_title = race_title;
        		 this.candidate_names = candidates;
@@ -37,10 +39,10 @@ import javax.swing.JRadioButton;
        	 /**
        	  * ToString method for class**/
        	 public String toString(){
-       		 String result = "";
-       		 for(int i = 0; i < race.getComponents().length; i++){
-       			 result += ((JButton)race.getComponent(i)).getText() + " ";
-       		 }
+       		 String result = race_title + "\n";
+       		 
+       		 for(String names: candidate_names)
+       			 result += names + " ";
        		 return result;
        	 }
 

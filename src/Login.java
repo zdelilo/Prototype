@@ -1,11 +1,13 @@
-import java.awt.Color;
+import java.awt.Color; 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,6 +22,8 @@ import javax.swing.border.LineBorder;
  * Validates user login | Brings up UserGUI given validLogin |
  */
 public class Login extends JFrame implements ActionListener{
+
+	private static final long serialVersionUID = -4896195070277297392L;
 	String inputUsername;
 	String inputPassword;
 	User user;
@@ -27,7 +31,20 @@ public class Login extends JFrame implements ActionListener{
 	JTextField passwordFLD;
 	JLabel tryAgain;
 	
+	ObjectInputStream brIn;
+	ObjectOutputStream pwOut;	
+	Socket sock;
+	
 	 Login(){
+		 /**Initialzies Server**/
+		 try {
+				sock = new Socket("127.0.0.1",50000);
+				pwOut = new ObjectOutputStream(sock.getOutputStream());
+				brIn = new ObjectInputStream(sock.getInputStream());    	
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
 
 		JPanel mainPanel = new JPanel(new GridBagLayout());		
 	    JPanel tablePanel = new JPanel(new GridBagLayout());
@@ -37,8 +54,8 @@ public class Login extends JFrame implements ActionListener{
 		JPanel myVote = new JPanel();
 		
 		/**Login GUI Components**/
-		 usernameFLD = new JTextField("Jane Doe",20);
-		 passwordFLD = new JTextField("********",20);
+		 usernameFLD = new JTextField("Rnkambara",20);
+		 passwordFLD = new JTextField("helloworld",20);
 		 
 		JLabel userLabel = new JLabel("Username: ");
 		JLabel passLabel = new JLabel("Password: ");
@@ -104,19 +121,9 @@ public class Login extends JFrame implements ActionListener{
         this.setVisible(true);  
         this.setIconImage(MyImages.codeFather.getImage());
         this.getRootPane().setDefaultButton(login);
+        
 	}
-
-	 /**
-	 * Validates User
-	 * @return true |Checks if user is contained within database &&
-	 * 			    |Checks if password of user matches the inputted password
-	 * @return false| user not within data base || inputted password does not match 
-	 * **/
-	public boolean validLogin(){
 		
-		return (MyVoteServer.users.containsKey(inputUsername) && inputPassword.equals(MyVoteServer.users.get(inputUsername).password));
-	}
-	
 	/**
 	* Action Preformed Method - Checks what buttons have been pressed
 	* @param e - Action event (actions enacted )
@@ -128,16 +135,33 @@ public class Login extends JFrame implements ActionListener{
 		if(e.getActionCommand().equals("login")){
 			inputUsername = usernameFLD.getText();
 			inputPassword = passwordFLD.getText();
-			user = MyVoteServer.users.get(inputUsername);
-			
-			if(validLogin())
-				user.UserGUI();
-			else
-				tryAgain.setVisible(true);
+				/**Initialize socket to access server**/
+			try {
+
+				/**Writes <login> key to server**/
+				pwOut.writeObject("<login> " + inputUsername + " " + inputPassword);
+				
+				
+				/***Reads from server to see if username has been validated (or not)**/
+				String readObject = (String) brIn.readObject();
+				
+					/**Validates user, then user object is read from class**/
+				if(readObject.equals("<validated>")){
+					user = (User) brIn.readObject();
+					user.UserGUI();
+					this.setVisible(false);
+					
+				}	/**Invalid - Error message to window**/
+				else if(readObject.equals("<invalid>"))
+					tryAgain.setVisible(true);
+				
+			} catch (IOException | ClassNotFoundException e1) {
+				
+				e1.printStackTrace();
+			}
 		}
 	}
 	public static void main(String[]args){
-		new API();
 		new Login();
 	}
 }

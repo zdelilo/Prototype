@@ -8,7 +8,7 @@ import javax.swing.JTextField;
  * Abstract Parent User Class
  * Each user has a | Username | Password | UserGUI |
  */
-public abstract class User {
+public abstract class User implements java.io.Serializable {
 
 	String username;
 	String password;	

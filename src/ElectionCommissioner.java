@@ -4,7 +4,7 @@
  * Child User class for Election Commissioner 
  * User GUI | BallotPrompt |
  */
-public class ElectionCommissioner extends User{
+public class ElectionCommissioner extends User  implements java.io.Serializable{
 
 
 	ElectionCommissioner(String username, String password) {

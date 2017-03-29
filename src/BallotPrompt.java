@@ -3,6 +3,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -112,11 +116,16 @@ public class BallotPrompt extends JFrame implements ActionListener {
    
     	if(e.getActionCommand().equals("confirm")){
     		String[] candArray = candidates.getText().split(",");
-    		p = new RacePanel(new JPanel(), race.getText(), candArray);
+    		List<String> candList = Arrays.asList(candArray);
+    		
+    		p = new RacePanel(new JPanel(), race.getText(), candList);
+    		
     		b.addBallot(p);
     	}
-    	if(e.getActionCommand().equals("finish"))
+    	if(e.getActionCommand().equals("finish")){
     		b.finishBallot();
+    		this.setVisible(false);
+    	}
     }
 
 	public static void main(String[] args) {
