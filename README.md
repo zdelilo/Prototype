@@ -1,5 +1,5 @@
 # Prototype
-Oder in which classes are un is IMPORTANT!
+Oder in which classes are run is IMPORTANT!
 Most likely the API class will have to be run fist.
   The API should create a File called MyVoteAPI.ser 
   if the file is not present, server API cannot be initialized
