@@ -81,10 +81,11 @@ public class HSOInterface extends JFrame implements ActionListener{
 	}
 
 	public void addList(String name){
+		
+		/**Retrieves Election Name and adds to current Election List**/
 		contents.add(name);
-		for(int i = 0; i < contents.size(); i++){
-			model.add(i, contents.get(i));
-		}
+		model.addElement(contents.get(contents.size()-1));
+
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(lWelcome))
