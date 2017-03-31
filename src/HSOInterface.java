@@ -21,6 +21,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 	JPanel pnlRadios = new JPanel();
 	JPanel pnlList = new JPanel();
 	JLabel lWelcome = new JLabel("Welcome HSO, ");// + HSO.users;
+	Election election;
 
 	HSOInterface(){
 
@@ -121,7 +122,10 @@ public class HSOInterface extends JFrame implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		if(e.getActionCommand().equals("NewElection")){
-			new Election();
+			
+			/**Have election take in current election**/
+			new Election(this);
+			
 			setVisible(false);
 		}
 	}

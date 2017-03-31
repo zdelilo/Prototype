@@ -12,8 +12,12 @@ public class Election extends JFrame implements ActionListener{
 	JButton confirm;
 	HSOInterface election;
 	
-	Election(){
+	/**HSO Interface is taken through election ballot
+	 * all additions are made to original HSO interface**/
+	Election(HSOInterface HSO){
 		
+		/**Assign election to HSO interface**/
+		election = HSO;
 		JPanel panelMain = new JPanel();
 		GroupLayout layout = new GroupLayout(panelMain);
 		JPanel panelSub = new JPanel();
@@ -70,7 +74,6 @@ public class Election extends JFrame implements ActionListener{
 		if(e.getActionCommand().equals("confirm")){
 			String electionName = txtElectionName.getText();
 			String commissionerID = txtCommissionerID.getText();
-			election = new HSOInterface();
 			election.addList(electionName);
 			this.setVisible(false);
 		}
