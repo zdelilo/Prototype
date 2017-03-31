@@ -1,9 +1,8 @@
-import java.io.IOException; 
+import java.io.IOException;  
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MyVoteHandler extends Thread {
 	ObjectInputStream brIn;
@@ -43,7 +42,8 @@ public class MyVoteHandler extends Thread {
 			break;
 			
 			case "<saveballot>":
-				 ArrayList<RacePanel> p = ( ArrayList<RacePanel> ) brIn.readObject();
+				 @SuppressWarnings("unchecked")
+				ArrayList<RacePanel> p = ( ArrayList<RacePanel> ) brIn.readObject();
 				 server.saveBallot(p);
 			break;
 			
@@ -54,13 +54,16 @@ public class MyVoteHandler extends Thread {
 			break;			
 			
 			case "<addRace>":
-				 race = (String)brIn.readObject();
-				 List<String> candidates =  (List<String>) brIn.readObject();
-				 server.addRace(race.trim(), candidates);
+				 RacePanel races =  (RacePanel) brIn.readObject();
+				 server.addRace(races);
 			break;
 			
 			case "<shutdown>":
 				die();
+			break;
+			
+			case "<getWinners>": 			
+				pwOut.writeObject(server.getRacePanels());
 			default:
 				pwOut.writeObject("<noQuery>");
 			}

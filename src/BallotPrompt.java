@@ -1,10 +1,8 @@
-import java.awt.Color;   
+import java.awt.Color;    
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -116,9 +114,11 @@ public class BallotPrompt extends JFrame implements ActionListener {
    
     	if(e.getActionCommand().equals("confirm")){
     		String[] candArray = candidates.getText().split(",");
-    		List<String> candList = Arrays.asList(candArray);
     		
-    		p = new RacePanel(new JPanel(), race.getText(), candList);
+    		List<Candidate> c = Candidate.createCandidates(candArray);
+    		
+    		
+    		p = new RacePanel(new JPanel(), race.getText(), c);
     		
     		b.addBallot(p);
     	}

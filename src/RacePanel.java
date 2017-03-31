@@ -1,6 +1,6 @@
+import java.util.ArrayList; 
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -9,22 +9,29 @@ import javax.swing.JRadioButton;
 	 * Race Panel - used to create panels that hold races and candidates
 	 */
 	public class RacePanel implements java.io.Serializable{
-        	
-       	 public transient  JPanel race;
+
+		private static final long serialVersionUID = -964492890009786601L;
+		public transient  JPanel race;
        	 public String race_title;
        	 public transient JRadioButton button;
-       	 public List<String> candidate_names;
+       	 
+       	 public  List<Candidate> candidates;
+       	 public  List<String> names = new ArrayList<String>();
        	 
        	 /**
        	  * Constructor for Race Panel
        	  * @param panel - JPanel 
        	  * @param race_title - Title for race
-       	  * @param candidates - String array | holds names of candidates
+       	  * @param candidates - Candidate array | holds candidates involved in race
        	  **/
-       	 RacePanel(JPanel panel, String race_title, List<String>  candidates){
+       	 RacePanel(JPanel panel, String race_title, List<Candidate> candidates){
        		 this.race = panel;
        		 this.race_title = race_title;
-       		 this.candidate_names = candidates;
+       		 this.candidates = candidates;
+       		 
+       		 for(Candidate name: candidates){
+       			 names.add(name.getName());
+       		 }
        	 }
        	 
        	 /**
@@ -35,15 +42,37 @@ import javax.swing.JRadioButton;
        		 race.add(button);
        		 this.button = button;
        	 }
-       	 
+ 
        	 /**
-       	  * ToString method for class**/
+       	 * @return list of winning candidates
+       	 * Takes int acccount ties. If there is a tie, Both
+       	 * candidates are added
+       	 */
+       	public List<Candidate>  getWinner(){
+       		Candidate temp = candidates.get(0);
+       		List<Candidate> winners = new ArrayList<Candidate> ();
+       		
+       		for(Candidate tally: candidates){
+    			if(temp.getTally() == tally.getTally()){
+    				winners.add(tally);
+    			}
+    			
+				if(temp.getTally() < tally.getTally()){
+					winners.clear();
+					winners.add(tally);
+				}
+       		}
+    			
+       		return winners;
+       	 }
+       	        	 
+       	 /**ToString method for class**/
        	 public String toString(){
-       		 String result = race_title + "\n";
+       		 String result = race_title + ": ";
        		 
-       		 for(String names: candidate_names)
-       			 result += names + " ";
-       		 return result;
+       		 for(Candidate names: candidates)
+       			 result += "|" + names.getName() + " Tally: " + names.getTally() ;
+       		 return result += "|\n\n";
        	 }
 
       } 

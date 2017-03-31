@@ -8,4 +8,6 @@ public class MyColors {
    static Color maroon = new Color(128,0,0);
    static Color tomato = new Color(255,99,71);
    static Color paleTurquoise = new Color(175,238,238);
+   static Color gold = new Color(255,215,0);
+   static Color kaki = new Color(255,239,213);
 }

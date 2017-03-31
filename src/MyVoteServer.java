@@ -47,7 +47,6 @@ public class MyVoteServer extends Thread  {
 				MyVoteHandler mv = new MyVoteHandler(myVote, this);
 				System.out.println("Started MyVoteHandler");
 				mv.start();
-	
 			}
 		}
 		catch(SocketException shock){	
@@ -92,9 +91,8 @@ public class MyVoteServer extends Thread  {
 	 * votes is a hashmap with key [race = {list of candidates}]
 	 * candidates has | candidate name | vote tallies |
 	 */
-	public void addRace(String race,  List<String> candidates){
-		List<Candidate> c = Candidate.createCandidates(candidates);
-		votes.put(race.trim(), c);
+	public void addRace(RacePanel race){
+		votes.put(race.race_title, race.candidates);
 	}
 	
 	/**
@@ -105,10 +103,15 @@ public class MyVoteServer extends Thread  {
 	 * index of candidate within the candidate list
 	 * NOTE >>> Backs up server with each vote (testing purposes)
 	 */
+	
 	public void addVote(String race, int selected){
 		votes.get(race.trim()).get(selected).incramentTally();
 		backup();
 		System.out.println(votes);
+	}
+	
+	public List<RacePanel> getRacePanels(){
+		return panels;
 	}
 	
 	/**
@@ -120,7 +123,6 @@ public class MyVoteServer extends Thread  {
 		try{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
 			apiOut.writeObject(panels);
-			apiOut.writeObject(votes);
 			apiOut.close();
 			System.out.println("Backup Complete!");
 
@@ -133,15 +135,15 @@ public class MyVoteServer extends Thread  {
 	 * deserializes/restores the servers "ballot" >>> ballot panels
 	 * and current votes
 	 */
+	@SuppressWarnings("unchecked")
 	public static void restore(){
 		
 		try{
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("BackupAPI.ser"));
 			panels = (ArrayList<RacePanel>) apiIn.readObject();
-		 	votes = (HashMap<String, List<Candidate>>)apiIn.readObject();
 			System.out.println("Restoration Complete!");
-			System.out.println(votes);
+			System.out.println(panels);
 			apiIn.close();
 			
 		}catch(IOException e){
@@ -165,6 +167,7 @@ public class MyVoteServer extends Thread  {
 
 	public static void main(String[]args){
 		new MyVoteServer().start();
+		restore();
 
 	}
 	
