@@ -32,7 +32,7 @@ public class StudentBallot {
 		 lp = new HashMap<String, List<Candidate>>();
 		 getPanels();
 		 String[] races = lp.keySet().toArray(new String[0]);
-		 List<Candidate>[] winners = lp.values().toArray(new List[0])
+		 List<Candidate>[] winners = lp.values().toArray(new List[0]);
 		
 		
 		 for(int i = 0; i < races.length;i++){
