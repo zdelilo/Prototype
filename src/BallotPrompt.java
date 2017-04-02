@@ -122,7 +122,7 @@ public class BallotPrompt extends JFrame implements ActionListener {
     		
     		b.addBallot(p,true);
     	}
-    	if(e.getActionCommand().equals("finish")){
+    	if(e.getActionCommand().equals("finish")) {
     		b.finishBallot(true);
     		this.setVisible(false);
     	}

@@ -10,7 +10,7 @@ public class MyVoteHandler extends Thread {
 	static MyVoteServer server;
 	Socket sock;
 	
-	MyVoteHandler(Socket socket, MyVoteServer serv){
+	MyVoteHandler(Socket socket, MyVoteServer serv) {
 		try{
 		server = serv;
 		sock = socket;

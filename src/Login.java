@@ -152,7 +152,7 @@ public class Login extends JFrame implements ActionListener{
 					this.setVisible(false);
 					
 				}	/**Invalid - Error message to window**/
-				else if(readObject.equals("<invalid>"))
+				else if(readObject.equals("<invalid>") )
 					tryAgain.setVisible(true);
 				
 				

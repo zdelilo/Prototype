@@ -1,7 +1,7 @@
 import java.util.ArrayList; 
 import java.util.List;
 
-public class Candidate implements java.io.Serializable{
+public class Candidate implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public String name;
 	private int tally;

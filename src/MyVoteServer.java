@@ -91,7 +91,7 @@ public class MyVoteServer extends Thread  {
 	 * votes is a hashmap with key [race = {list of candidates}]
 	 * candidates has | candidate name | vote tallies |
 	 **/
-	public void addRace(RacePanel race){
+	public void addRace(RacePanel race) {
 		votes.put(race.race_title, race.candidates);
 		backup();
 	}

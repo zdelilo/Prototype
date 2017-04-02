@@ -8,7 +8,7 @@ import javax.swing.JRadioButton;
 	 * @author CodeFather 
 	 * Race Panel - used to create panels that hold races and candidates
 	 */
-	public class RacePanel implements java.io.Serializable{
+	public class RacePanel implements java.io.Serializable {
 
 		private static final long serialVersionUID = -964492890009786601L;
 		 public  JPanel race;

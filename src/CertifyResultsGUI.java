@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
-public class CertifyResultsGUI extends JFrame implements ActionListener{
+public class CertifyResultsGUI extends JFrame implements ActionListener {
 	
 	User[] users;
 	

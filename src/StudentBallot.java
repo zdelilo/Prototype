@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-public class StudentBallot {
+public class StudentBallot{
 
 	Ballot b;
 	HashMap<String, List<Candidate>> lp;

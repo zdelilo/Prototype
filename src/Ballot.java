@@ -84,7 +84,7 @@ public class Ballot extends JFrame implements ActionListener{
 	     * retrieves all ballot information from RacePanel
 	     * 		| race_title | candidates |
 	     */
-	    public void addBallot(RacePanel p, boolean save){
+	    public void addBallot(RacePanel p, boolean save) {
 	    	
     	 /**panels - acts as storage for a "ballot"
     	  | holds all necessary components to re-create ballot |

@@ -30,7 +30,7 @@ public class DisplayGUI extends JFrame implements ActionListener{
 	ObjectOutputStream pwOut;	
 	Socket sock;
 	
-	 DisplayGUI(){
+	 DisplayGUI() {
 		
 		 startServer();
 		
