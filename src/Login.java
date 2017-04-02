@@ -138,23 +138,20 @@ public class Login extends JFrame implements ActionListener{
 				/**Initialize socket to access server**/
 			try {
 
+				
 				/**Writes <login> key to server**/
-				pwOut.writeObject("<login> " + inputUsername + " " + inputPassword);
-				
-				
 				/***Reads from server to see if username has been validated (or not)**/
+				pwOut.writeObject("<login> " + inputUsername + " " + inputPassword);
 				String readObject = (String) brIn.readObject();
 				
-					/**Validates user, then user object is read from class**/
+				/**Validates user, then user object is read from class**/
 				if(readObject.equals("<validated>")){
 					user = (User) brIn.readObject();
 					user.UserGUI(user);
 					this.setVisible(false);
-					
-				}	/**Invalid - Error message to window**/
+				}	
 				else if(readObject.equals("<invalid>") )
 					tryAgain.setVisible(true);
-				
 				
 			} catch (IOException | ClassNotFoundException e1) {
 				

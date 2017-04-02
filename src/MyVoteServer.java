@@ -21,7 +21,7 @@ public class MyVoteServer extends Thread  {
 	static HashMap<String, User> users;
 	static HashMap<String, List<Candidate>> votes;
 	static HashMap<String, Integer> summaryStatistcs;
-    static ArrayList<RacePanel> panels;
+   
 	ServerSocket ss;
 	
 	/**
@@ -31,7 +31,6 @@ public class MyVoteServer extends Thread  {
 	MyVoteServer(){
 		 users = new HashMap<String,User>();
 		 votes = new HashMap<String, List<Candidate>>();
-		 panels = new ArrayList<RacePanel>();
 		 summaryStatistcs = new HashMap<String, Integer>();
 		 API.deserializeAPI();
 	}
@@ -80,10 +79,7 @@ public class MyVoteServer extends Thread  {
 	 * saves an array which holds all of the panels contained on the race
 	 * panels contain | race_title | candidates |
 	 **/
-	public void saveBallot( ArrayList<RacePanel>  p){
-		panels = p;
-		backup();
-	}
+	
 	/**
 	 * @param race
 	 * @param candidates
@@ -108,15 +104,11 @@ public class MyVoteServer extends Thread  {
 		System.out.println(votes);
 		votes.get(race.trim()).get(selected).incramentTally();
 		users.get(votedUser).voted = true;
-		System.out.println("Enter: " + panels);
-		//System.out.println(votedUser +" " + users.get(votedUser).voted);
+		
 		backup();
 	}
 	
-	/** @return ballot info for current election**/
-	public List<RacePanel> getRacePanels(){
-		return panels;
-	}
+	
 	
 	/** @return users in api**/
 	public User[] getUsers(){
@@ -135,7 +127,6 @@ public class MyVoteServer extends Thread  {
 		
 		try{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
-			apiOut.writeObject(panels);
 			apiOut.writeObject(votes);
 			apiOut.close();
 			System.out.println("Backup Complete!");
@@ -146,8 +137,8 @@ public class MyVoteServer extends Thread  {
 	}
 	
 	/**
-	 * deserializes/restores the servers "ballot" >>> ballot panels
-	 * and current votes
+	 * deserializes/restores the servers "ballot" >>> Votes holds 
+	 * races and Candidates necessary to re-build a ballot
 	 **/
 	@SuppressWarnings("unchecked")
 	public static void restore(){
@@ -155,11 +146,9 @@ public class MyVoteServer extends Thread  {
 		try{
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("BackupAPI.ser"));
-			panels = (ArrayList<RacePanel>) apiIn.readObject();
 			votes = (HashMap<String, List<Candidate>>) apiIn.readObject();
 			System.out.println("Restoration Complete!");
 			System.out.println(votes);
-			System.out.println(panels);
 			apiIn.close();
 			
 		}catch(IOException e){

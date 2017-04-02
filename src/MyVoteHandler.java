@@ -41,12 +41,6 @@ public class MyVoteHandler extends Thread {
 				pwOut.writeObject("<invalid>");
 			break;
 			
-			case "<saveballot>":
-				 @SuppressWarnings("unchecked")
-				ArrayList<RacePanel> p = ( ArrayList<RacePanel> ) brIn.readObject();
-				 server.saveBallot(p);
-			break;
-			
 			case "<vote>":
 				String race = (String)brIn.readObject();
 				int selected = (int)brIn.readObject();
@@ -63,9 +57,6 @@ public class MyVoteHandler extends Thread {
 				die();
 			break;
 			
-			case "<getPanels>": 			
-				pwOut.writeObject(server.getRacePanels());
-			break;
 			case "<getVotes>":
 				pwOut.writeObject(server.getVotes());
 			case "<certify>":
