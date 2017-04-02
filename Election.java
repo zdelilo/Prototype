@@ -12,8 +12,12 @@ public class Election extends JFrame implements ActionListener{
 	JButton confirm;
 	HSOInterface election;
 	
-	Election(){
+	/**HSO Interface is taken through election ballot
+	 * all additions are made to original HSO interface**/
+	Election(HSOInterface HSO){
 		
+		/**Assign election to HSO interface**/
+		election = HSO;
 		JPanel panelMain = new JPanel();
 		GroupLayout layout = new GroupLayout(panelMain);
 		JPanel panelSub = new JPanel();
@@ -32,7 +36,7 @@ public class Election extends JFrame implements ActionListener{
 		/**Set Defaults for main panel | allows enter key | top bar icon**/
         this.getRootPane().setDefaultButton(confirm);
         this.setIconImage(MyImages.codeFather.getImage());
-        this.setTitle("Create Ballot");
+        this.setTitle("Create Election");
         this.setSize(450, 200);
         this.getContentPane().add(panelMain);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -70,7 +74,6 @@ public class Election extends JFrame implements ActionListener{
 		if(e.getActionCommand().equals("confirm")){
 			String electionName = txtElectionName.getText();
 			String commissionerID = txtCommissionerID.getText();
-			election = new HSOInterface();
 			election.addList(electionName);
 			this.setVisible(false);
 		}
