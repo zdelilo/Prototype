@@ -5,14 +5,14 @@
  */
 public class HSO extends User{
 
-	HSO(String username, String password) {
-		super(username, password);
+	HSO(String username, String password, String gender, 
+			 String rank,     String major,    String college) {
+		super(username, password, gender, rank, major, college);
 		
 	}
 
-	public void UserGUI() {
-		//TODO add HSO GUI
-		System.out.println("NO HSO GUI");
+	public void UserGUI(User user) {
+		new HSOInterface();
 	}
 
 }

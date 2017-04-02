@@ -11,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -22,7 +24,7 @@ import javax.swing.border.LineBorder;
 
 public class DisplayGUI extends JFrame implements ActionListener{
 	
-	List<RacePanel> winners;
+	
 	
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
@@ -32,9 +34,10 @@ public class DisplayGUI extends JFrame implements ActionListener{
 		
 		 startServer();
 		
-		 winners = new  ArrayList<RacePanel>(); 
-		 getWinners();
-
+		
+		 HashMap<String, List<Candidate>> map =  getWinners();
+		 String[] races = map.keySet().toArray(new String[0]);
+		 List<Candidate>[] winners = map.values().toArray(new List[0]);
 		 
 		 JPanel mainPanel = new JPanel(new GridBagLayout());	
 		 mainPanel.setBackground(Color.white);
@@ -59,12 +62,13 @@ public class DisplayGUI extends JFrame implements ActionListener{
 		 winnerPanel.add(trophy,c);
 		 
 		 int i;
-		 for(i = 0; i< winners.size(); i++)
+		 for(i = 0; i< races.length; i++)
 		 {
 			 c.gridy = i+2;
+			 
 			 raceP.setBorder(new LineBorder(MyColors.gold,4));
-			 raceP.add(new JLabel(winners.get(i).race_title));
-			 raceP.add(new JLabel(winners.get(i).getWinner().toString()));
+			 raceP.add(new JLabel(races[i]));
+			 raceP.add(new JLabel(Candidate.GetWinners(winners[i]).toString()));
 			 winnerPanel.add(raceP,c);
 			 raceP = new JPanel();
 			 raceP.setBackground(MyColors.paleTurquoise);
@@ -106,14 +110,15 @@ public class DisplayGUI extends JFrame implements ActionListener{
 	 * @throws ClassNotFoundException
 	 * Retrieves array race Panels from Server
 	 */
-	public void getWinners() {
-		 try {
-			pwOut.writeObject("<getWinners>");
-			 winners = (ArrayList<RacePanel>)brIn.readObject();
+	public HashMap<String, List<Candidate>> getWinners() {
+		HashMap<String, List<Candidate>> winners = null;
+		try {
+			pwOut.writeObject("<getVotes>");
+			 winners = (HashMap<String, List<Candidate>>)brIn.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+		return winners;
 	 }
 	 
 	 public void startServer(){

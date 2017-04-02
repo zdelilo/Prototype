@@ -1,4 +1,4 @@
-import java.io.FileInputStream;
+import java.io.FileInputStream; 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,18 +7,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 public class MyVoteServer extends Thread  {
 	
-	/**Hashmap holds all users 
+	/**
+	 * Hashmap holds all users 
 	 * key - student's username
-	 * value - User | EC | HSO | OIT | Student |**/
+	 * value - User | EC | HSO | OIT | Student |
+	 * **/
 	static HashMap<String, User> users;
 	static HashMap<String, List<Candidate>> votes;
+	static HashMap<String, Integer> summaryStatistcs;
     static ArrayList<RacePanel> panels;
-	
 	ServerSocket ss;
 	
 	/**
@@ -29,6 +32,7 @@ public class MyVoteServer extends Thread  {
 		 users = new HashMap<String,User>();
 		 votes = new HashMap<String, List<Candidate>>();
 		 panels = new ArrayList<RacePanel>();
+		 summaryStatistcs = new HashMap<String, Integer>();
 		 API.deserializeAPI();
 	}
 	
@@ -56,43 +60,40 @@ public class MyVoteServer extends Thread  {
 			System.out.println("Server Already Running");
 		}
 	}
-	
 	/**
 	 * @param inputUsername
 	 * @param inputPassword
 	 * @return validates user | true | false |
-	 */
+	 **/
 	public boolean validateLogin(String inputUsername, String inputPassword){	
 		return (users.containsKey(inputUsername) && inputPassword.equals(users.get(inputUsername).password));
 	}
-	
 	/**
 	 * @param username
 	 * @return user given username
-	 */
+	 **/
 	public User getUser(String username){
 		return users.get(username.trim());
 	}
-	
 	/**
 	 * @param p
 	 * saves an array which holds all of the panels contained on the race
 	 * panels contain | race_title | candidates |
-	 */
+	 **/
 	public void saveBallot( ArrayList<RacePanel>  p){
 		panels = p;
 		backup();
 	}
-	
 	/**
 	 * @param race
 	 * @param candidates
 	 * adds races to the HashMap which keeps track of votes
 	 * votes is a hashmap with key [race = {list of candidates}]
 	 * candidates has | candidate name | vote tallies |
-	 */
+	 **/
 	public void addRace(RacePanel race){
 		votes.put(race.race_title, race.candidates);
+		backup();
 	}
 	
 	/**
@@ -102,27 +103,40 @@ public class MyVoteServer extends Thread  {
 	 * candidates vote tallies are accessed using the race and 
 	 * index of candidate within the candidate list
 	 * NOTE >>> Backs up server with each vote (testing purposes)
-	 */
-	
-	public void addVote(String race, int selected){
-		votes.get(race.trim()).get(selected).incramentTally();
-		backup();
+	 **/
+	public void addVote(String race, int selected, String votedUser){
 		System.out.println(votes);
+		votes.get(race.trim()).get(selected).incramentTally();
+		users.get(votedUser).voted = true;
+		System.out.println("Enter: " + panels);
+		//System.out.println(votedUser +" " + users.get(votedUser).voted);
+		backup();
 	}
 	
+	/** @return ballot info for current election**/
 	public List<RacePanel> getRacePanels(){
 		return panels;
+	}
+	
+	/** @return users in api**/
+	public User[] getUsers(){
+		return  users.values().toArray(new User[0]);
+	}
+	
+	public HashMap<String, List<Candidate>> getVotes(){
+		return votes;
 	}
 	
 	/**
 	 * Serializes/saves the server's "ballot" >>> ballot panels
 	 * and current votes
-	 */
+	 **/
 	public static void backup(){
 		
 		try{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
 			apiOut.writeObject(panels);
+			apiOut.writeObject(votes);
 			apiOut.close();
 			System.out.println("Backup Complete!");
 
@@ -134,7 +148,7 @@ public class MyVoteServer extends Thread  {
 	/**
 	 * deserializes/restores the servers "ballot" >>> ballot panels
 	 * and current votes
-	 */
+	 **/
 	@SuppressWarnings("unchecked")
 	public static void restore(){
 		
@@ -142,7 +156,9 @@ public class MyVoteServer extends Thread  {
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("BackupAPI.ser"));
 			panels = (ArrayList<RacePanel>) apiIn.readObject();
+			votes = (HashMap<String, List<Candidate>>) apiIn.readObject();
 			System.out.println("Restoration Complete!");
+			System.out.println(votes);
 			System.out.println(panels);
 			apiIn.close();
 			
@@ -154,7 +170,7 @@ public class MyVoteServer extends Thread  {
 		}
 	}
 	
-	/**Kills the server on exit*/
+	/**Kills the server on exit**/
 	public void die(){
 		try{
 			ss.close();
@@ -163,7 +179,6 @@ public class MyVoteServer extends Thread  {
 		}
 		System.exit(0);
 	}
-	
 
 	public static void main(String[]args){
 		new MyVoteServer().start();

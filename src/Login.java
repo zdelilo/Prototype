@@ -148,12 +148,13 @@ public class Login extends JFrame implements ActionListener{
 					/**Validates user, then user object is read from class**/
 				if(readObject.equals("<validated>")){
 					user = (User) brIn.readObject();
-					user.UserGUI();
+					user.UserGUI(user);
 					this.setVisible(false);
 					
 				}	/**Invalid - Error message to window**/
 				else if(readObject.equals("<invalid>"))
 					tryAgain.setVisible(true);
+				
 				
 			} catch (IOException | ClassNotFoundException e1) {
 				
@@ -162,6 +163,10 @@ public class Login extends JFrame implements ActionListener{
 		}
 	}
 	public static void main(String[]args){
+		 MyVoteServer server = new MyVoteServer();
+		 server.start();
+		 server.restore();
+		 
 		new Login();
 	}
 }

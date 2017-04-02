@@ -50,7 +50,8 @@ public class MyVoteHandler extends Thread {
 			case "<vote>":
 				String race = (String)brIn.readObject();
 				int selected = (int)brIn.readObject();
-				server.addVote(race, selected);
+				String votedUser = (String)brIn.readObject();
+				server.addVote(race, selected, votedUser);
 			break;			
 			
 			case "<addRace>":
@@ -62,8 +63,14 @@ public class MyVoteHandler extends Thread {
 				die();
 			break;
 			
-			case "<getWinners>": 			
+			case "<getPanels>": 			
 				pwOut.writeObject(server.getRacePanels());
+			break;
+			case "<getVotes>":
+				pwOut.writeObject(server.getVotes());
+			case "<certify>":
+				pwOut.writeObject(server.getUsers());
+
 			default:
 				pwOut.writeObject("<noQuery>");
 			}

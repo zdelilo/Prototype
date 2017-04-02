@@ -33,12 +33,12 @@ public class API {
 			
 			String[] user = apiReader.nextLine().split(" ");
 			
-			if(user.length < 3)
-				MyVoteServer.users.put(user[0], new Student(user[0], user[1]));
+			if(user.length < 7)
+				MyVoteServer.users.put(user[0], new Student(user[0], user[1],user[2],user[3],user[4],user[5]));
 			if(user[0].equals("EC"))
-				MyVoteServer.users.put(user[1], new ElectionCommissioner(user[1], user[2]));
+				MyVoteServer.users.put(user[1], new ElectionCommissioner(user[1], user[2],user[3],user[4],user[5],user[6]));
 			if(user[0].equals("HSO"))
-				MyVoteServer.users.put(user[1], new HSO(user[1], user[2]));
+				MyVoteServer.users.put(user[1], new HSO(user[1], user[2],user[3],user[4],user[5],user[6]));
 		}
 		
 		}catch(IOException e){

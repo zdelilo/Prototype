@@ -29,7 +29,7 @@ public class BallotPrompt extends JFrame implements ActionListener {
 	JLabel candLabel; 
 	JButton confirm;
 	JButton finish;
-	Ballot b = new Ballot();
+	Ballot b = new Ballot(null);
     
 	/**Creates interface for inputting ballot
 	 *|Takes in title of race
@@ -117,13 +117,13 @@ public class BallotPrompt extends JFrame implements ActionListener {
     		
     		List<Candidate> c = Candidate.createCandidates(candArray);
     		
+    		JPanel temp = new JPanel();
+    		p = new RacePanel(temp, race.getText(), c);
     		
-    		p = new RacePanel(new JPanel(), race.getText(), c);
-    		
-    		b.addBallot(p);
+    		b.addBallot(p,true);
     	}
     	if(e.getActionCommand().equals("finish")){
-    		b.finishBallot();
+    		b.finishBallot(true);
     		this.setVisible(false);
     	}
     }

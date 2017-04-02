@@ -11,7 +11,7 @@ import javax.swing.JRadioButton;
 	public class RacePanel implements java.io.Serializable{
 
 		private static final long serialVersionUID = -964492890009786601L;
-		public transient  JPanel race;
+		 public  JPanel race;
        	 public String race_title;
        	 public transient JRadioButton button;
        	 
@@ -26,6 +26,14 @@ import javax.swing.JRadioButton;
        	  **/
        	 RacePanel(JPanel panel, String race_title, List<Candidate> candidates){
        		 this.race = panel;
+       		 this.race_title = race_title;
+       		 this.candidates = candidates;
+       		 
+       		 for(Candidate name: candidates){
+       			 names.add(name.getName());
+       		 }
+       	 }
+       	 RacePanel(String race_title, List<Candidate> candidates){
        		 this.race_title = race_title;
        		 this.candidates = candidates;
        		 
