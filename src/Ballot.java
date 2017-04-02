@@ -192,7 +192,7 @@ public class Ballot extends JFrame implements ActionListener{
 	 	    	pwOut.writeObject(race);
 				pwOut.writeObject(selectedIndex);
 				pwOut.writeObject(user.username);
-				
+				confirm.setVisible(false);
 			} catch (IOException j) {
 				j.printStackTrace();
 			}
