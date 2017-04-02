@@ -34,11 +34,18 @@ public class MyVoteHandler extends Thread {
 			
 			case "<login>":
 				if(validateLogin(myVoteCommands[1],myVoteCommands[2])){
-				pwOut.writeObject("<validated>");
-				pwOut.writeObject(server.getUser(myVoteCommands[1]));
+					
+					if(!server.voted(myVoteCommands[1])){
+						System.out.println("here");
+						pwOut.writeObject("<validated>");
+						pwOut.writeObject(server.getUser(myVoteCommands[1]));
+					}
+					else
+					pwOut.writeObject("<hasVoted>");
 				}
 				else	
 				pwOut.writeObject("<invalid>");
+			
 			break;
 			
 			case "<vote>":
@@ -60,7 +67,7 @@ public class MyVoteHandler extends Thread {
 			case "<getVotes>":
 				pwOut.writeObject(server.getVotes());
 			case "<certify>":
-				pwOut.writeObject(server.getUsers());
+				pwOut.writeObject(server.getVotedUsers());
 
 			default:
 				pwOut.writeObject("<noQuery>");

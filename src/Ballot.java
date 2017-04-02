@@ -140,6 +140,8 @@ public class Ballot extends JFrame implements ActionListener{
    	 	                    .addComponent(finish)
    	 	                    ); 
 	    }
+	    
+	    
 	    public void actionPerformed(ActionEvent e){
 	    	/**Confirms completed submission
 	    	 * exits server and system**/
@@ -186,7 +188,6 @@ public class Ballot extends JFrame implements ActionListener{
      	  * **/  
 	   public void addVotes(String race, int selectedIndex){
 		   try {
-   			System.out.println(user.voted);
 	 	    	pwOut.writeObject("<vote>");
 	 	    	pwOut.writeObject(race);
 				pwOut.writeObject(selectedIndex);

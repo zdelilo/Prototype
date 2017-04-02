@@ -16,12 +16,10 @@ public abstract class User implements java.io.Serializable{
 	String rank;
 	String major;
 	String college;
-	boolean voted;
 	
 	User(String username, String password, String gender, 
 		 String rank,     String major,    String college){
 		
-		voted = false;
 		this.username = username;
 		this.password = password;
 		this.gender = gender;

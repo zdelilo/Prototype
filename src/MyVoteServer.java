@@ -12,13 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MyVoteServer extends Thread  {
-	
-	/**
-	 * Hashmap holds all users 
-	 * key - student's username
-	 * value - User | EC | HSO | OIT | Student |
-	 * **/
-	static HashMap<String, User> users;
+
+	static HashMap<String, User> users;/****/
+	static HashMap<String, User> votedUsers;
 	static HashMap<String, List<Candidate>> votes;
 	static HashMap<String, Integer> summaryStatistcs;
    
@@ -30,6 +26,7 @@ public class MyVoteServer extends Thread  {
 	 */
 	MyVoteServer(){
 		 users = new HashMap<String,User>();
+		 votedUsers = new HashMap<String, User>();
 		 votes = new HashMap<String, List<Candidate>>();
 		 summaryStatistcs = new HashMap<String, Integer>();
 		 API.deserializeAPI();
@@ -67,6 +64,11 @@ public class MyVoteServer extends Thread  {
 	public boolean validateLogin(String inputUsername, String inputPassword){	
 		return (users.containsKey(inputUsername) && inputPassword.equals(users.get(inputUsername).password));
 	}
+	
+	public boolean voted(String username){
+		return votedUsers.containsKey(username);
+	}
+	
 	/**
 	 * @param username
 	 * @return user given username
@@ -74,11 +76,6 @@ public class MyVoteServer extends Thread  {
 	public User getUser(String username){
 		return users.get(username.trim());
 	}
-	/**
-	 * @param p
-	 * saves an array which holds all of the panels contained on the race
-	 * panels contain | race_title | candidates |
-	 **/
 	
 	/**
 	 * @param race
@@ -101,18 +98,15 @@ public class MyVoteServer extends Thread  {
 	 * NOTE >>> Backs up server with each vote (testing purposes)
 	 **/
 	public void addVote(String race, int selected, String votedUser){
-		System.out.println(votes);
-		votes.get(race.trim()).get(selected).incramentTally();
-		users.get(votedUser).voted = true;
 		
+		votes.get(race.trim()).get(selected).incramentTally();
+		votedUsers.put(votedUser, users.get(votedUser));
 		backup();
 	}
 	
-	
-	
 	/** @return users in api**/
-	public User[] getUsers(){
-		return  users.values().toArray(new User[0]);
+	public User[] getVotedUsers(){
+		return  votedUsers.values().toArray(new User[0]);
 	}
 	
 	public HashMap<String, List<Candidate>> getVotes(){
@@ -127,6 +121,7 @@ public class MyVoteServer extends Thread  {
 		
 		try{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
+			apiOut.writeObject(votedUsers);
 			apiOut.writeObject(votes);
 			apiOut.close();
 			System.out.println("Backup Complete!");
@@ -146,6 +141,7 @@ public class MyVoteServer extends Thread  {
 		try{
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("BackupAPI.ser"));
+			votedUsers = (HashMap<String, User>) apiIn.readObject();
 			votes = (HashMap<String, List<Candidate>>) apiIn.readObject();
 			System.out.println("Restoration Complete!");
 			System.out.println(votes);
@@ -171,6 +167,7 @@ public class MyVoteServer extends Thread  {
 
 	public static void main(String[]args){
 		new MyVoteServer().start();
+		//backup();
 		restore();
 
 	}

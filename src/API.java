@@ -69,7 +69,6 @@ public class API {
 	
 	/**
 	 *  deserializeAPI method
-	 *  
 	 *  reads the serialized file >>> MyVoteAPI.ser 
 	 *  and "deserializes" (re-forms into User Hashmap) file to initialize
 	 *  user hashmap

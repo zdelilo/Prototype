@@ -19,18 +19,17 @@ public class StudentBallot{
 	Socket sock;
 	
 	
+	/**
+	 * @param user
+	 * Re-builds ballot for user to vote
+	 */
 	StudentBallot(User user){
 		 startServer();
 		
-		 if(user.voted){
-			 System.out.println("User has alread voted...");
-		 } 
-		 
-		 else{
 	     b = new Ballot(user);
 		 b.setVisible(false);
-		 lp = new HashMap<String, List<Candidate>>();
-		 getPanels();
+		 lp = new HashMap<String, List<Candidate>>(); getPanels();
+		 
 		 String[] races = lp.keySet().toArray(new String[0]);
 		 List<Candidate>[] winners = lp.values().toArray(new List[0]);
 		
@@ -39,11 +38,12 @@ public class StudentBallot{
 	    	 RacePanel p = new RacePanel( races[i], winners[i]);
 			 b.addBallot(p, false);
 		 }
+		 
 		 b.finishBallot(false);
 		 b.setVisible(true);
 
 		 }
-	}
+	
 	public void getPanels(){
 		
 		try {

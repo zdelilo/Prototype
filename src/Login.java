@@ -30,7 +30,7 @@ public class Login extends JFrame implements ActionListener{
 	JTextField usernameFLD;
 	JTextField passwordFLD;
 	JLabel tryAgain;
-	
+	JLabel votedError;
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
@@ -64,10 +64,16 @@ public class Login extends JFrame implements ActionListener{
 		JButton login = new JButton("Login");
 		login.setIcon(MyImages.smileIcon);
 		login.setIconTextGap(10);
+		
 		tryAgain = new JLabel();
 		tryAgain.setText("Incorrect username of password. Please Try Again...");
 		tryAgain.setIcon(MyImages.frownIcon);
 		tryAgain.setVisible(false);
+		
+		votedError = new JLabel();
+		votedError.setText("Oops! Seems as if you've already voted!");
+		votedError.setIcon(MyImages.yellowFrown);
+		votedError.setVisible(false);
 		
 		/**Adding componets to Panels**/
 		mainPanel.setBackground(MyColors.deepBlue);
@@ -108,6 +114,8 @@ public class Login extends JFrame implements ActionListener{
 		c.gridx = 0;
 		c.gridy = 4;
 		tablePanel.add(tryAgain,c);
+		c.gridy = 5;
+		tablePanel.add(votedError,c);
 		tablePanel.setBorder(new LineBorder(Color.white,3));
 		tablePanel.setBackground(Color.white);
 		
@@ -117,7 +125,7 @@ public class Login extends JFrame implements ActionListener{
 		/**Sets Defaults for main Panel**/
 		this.getContentPane().add(mainPanel);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		this.setSize(430,270);
+		this.setSize(430,300);
         this.setVisible(true);  
         this.setIconImage(MyImages.codeFather.getImage());
         this.getRootPane().setDefaultButton(login);
@@ -150,8 +158,14 @@ public class Login extends JFrame implements ActionListener{
 					user.UserGUI(user);
 					this.setVisible(false);
 				}	
-				else if(readObject.equals("<invalid>") )
-					tryAgain.setVisible(true);
+				else 
+					System.out.println(readObject);
+					switch(readObject){
+					case"<invalid>" : this.tryAgain.setVisible(true);
+						break;
+					case"<hasVoted>": this.votedError.setVisible(true);
+						break;
+					}
 				
 			} catch (IOException | ClassNotFoundException e1) {
 				
