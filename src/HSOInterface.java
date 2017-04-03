@@ -2,6 +2,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.awt.*;
@@ -21,17 +25,29 @@ public class HSOInterface extends JFrame implements ActionListener{
 	JPanel pnlRadios = new JPanel();
 	JPanel pnlList = new JPanel();
 	JLabel lWelcome = new JLabel("Welcome HSO, ");// + HSO.users;
-	Election election;
+	ElectionPrompt election;
 	JLabel lCurrentElections; 
 	ArrayList<String> commissioner = new ArrayList<String>(); 
+	JButton finish; 
+	
+	Election[] elections;
+	/**Server Stuff**/
+	ObjectInputStream brIn;
+	ObjectOutputStream pwOut;	
+	Socket sock;
+	
 	
 	HSOInterface(){
+		startServer();
 		lCurrentElections = new JLabel("Or choose a current election");
 
 		pnlList.add(lCurrentElections);
 		pnlList.add(list);
 		pnlList.setAutoscrolls(true);
-
+		
+		finish = new JButton("Finish");
+    	finish.setActionCommand("finish");
+    	finish.addActionListener(this);
 
 		pnlList.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
@@ -39,6 +55,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		JRadioButton radRecount = new JRadioButton("Recount Results");
 		JRadioButton radDisqualify = new JRadioButton("Disqualify Voter");
 		JRadioButton radCertify = new JRadioButton("Certify Election");
+		JRadioButton radDisplay = new JRadioButton("Display Election");
 
 
 		radNewElection.setActionCommand("NewElection");
@@ -52,11 +69,16 @@ public class HSOInterface extends JFrame implements ActionListener{
 
 		radCertify.setActionCommand("Certify");
 		radCertify.addActionListener(this);
+		
+		radDisplay.setActionCommand("Display");
+		radDisplay.addActionListener(this);
 
 		pnlRadios.add(radNewElection);
 		pnlRadios.add(radDisqualify);
 		pnlRadios.add(radRecount);
 		pnlRadios.add(radCertify);
+		pnlRadios.add(radDisplay);
+		
 		pnlRadios.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -72,6 +94,10 @@ public class HSOInterface extends JFrame implements ActionListener{
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		panelMain.setLayout(layout);
+		
+		
+		getList();
+		initializeList();
 
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -79,6 +105,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(pnlRadios)
 						.addComponent(pnlList))
+
 				);
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -88,6 +115,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 						.addComponent(pnlRadios)).addGap(50)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(pnlList)
+
 						));
 
 
@@ -97,6 +125,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		setLocation(x, y);
 		setVisible(true);
 
+		
 	}
 
 	public void addList(String name){
@@ -111,6 +140,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(pnlRadios)
 						.addComponent(pnlList))
+				.addComponent(finish)
 				);
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -120,6 +150,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 						.addComponent(pnlRadios)).addGap(50)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(pnlList))
+				.addComponent(finish)
 				);
 
 		panelMain.setBackground(MyColors.deepBlue);
@@ -136,34 +167,73 @@ public class HSOInterface extends JFrame implements ActionListener{
 		int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
 		setLocation(x, y);
 		setVisible(true);
+		
+		
 	}
-
-	public void addCommissioner(String id){
-		commissioner.add(id);
-	}
-
+	
 	public void actionPerformed(ActionEvent e){
 		if(e.getActionCommand().equals("NewElection")){
 
 			/**Have election take in current election**/
-			new Election(this);
+			new ElectionPrompt(this);
 
 			setVisible(false);
 		}
 		if(list.getSelectedValue() != null){
+			String selectedE = list.getSelectedValue().toString();
+			initializeElection(selectedE);
 			if(e.getActionCommand().equals("Recount")){
 				new CurrentElection(this);
 			}
 			else if(e.getActionCommand().equals("Certify")){
-
+				
+				new CertifyResultsGUI();
 			}
+			
+			else if(e.getActionCommand().equals("Display")){
+				new DisplayGUI();
+			}
+			
 			else if(e.getActionCommand().equals("Disqualify")){
 
 			}
-
 		}
+	
+		if(e.getActionCommand().equals("finish"))
+			shutdown();
 	}
 
+	
+	 public void getList(){
+		 try {
+			pwOut.writeObject("<getElections>");
+			elections = (Election[])brIn.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			
+			e.printStackTrace();
+		}
+	 }
+	
+	 public void initializeList(){
+		 for(Election e: elections)
+			 this.addList(e.election_title);
+	 }
+	 
+	 public void initializeElection(String selectedE){
+		 try {
+				pwOut.writeObject("<selectedElection>");
+				pwOut.writeObject(selectedE);
+				
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+	 }
+	public void addCommissioner(String id){
+		commissioner.add(id);
+	}
+
+	
 	public String getElection(){
 		return list.getSelectedValue().toString();	
 	}
@@ -172,6 +242,29 @@ public class HSOInterface extends JFrame implements ActionListener{
 		return commissioner.get(list.getSelectedIndex());	
 	}
 	
+	
+	public void shutdown(){
+		try {
+			pwOut.writeObject("<shutdown>");
+			this.setVisible(false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	 public void startServer(){
+		 /**Initialzies Server**/
+		 try {
+				sock = new Socket("127.0.0.1",50000);
+				pwOut = new ObjectOutputStream(sock.getOutputStream());
+				brIn = new ObjectInputStream(sock.getInputStream());    	
+			
+		 	} catch (IOException e) {
+				e.printStackTrace();
+			}
+	 }
+	
+	
+	 
 	public static void main(String args[]){
 		new HSOInterface();
 	}

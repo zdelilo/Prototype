@@ -146,7 +146,6 @@ public class Login extends JFrame implements ActionListener{
 				/**Initialize socket to access server**/
 			try {
 
-				
 				/**Writes <login> key to server**/
 				/***Reads from server to see if username has been validated (or not)**/
 				pwOut.writeObject("<login> " + inputUsername + " " + inputPassword);
@@ -154,12 +153,19 @@ public class Login extends JFrame implements ActionListener{
 				
 				/**Validates user, then user object is read from class**/
 				if(readObject.equals("<validated>")){
+					
 					user = (User) brIn.readObject();
-					user.UserGUI(user);
+					if(user instanceof HSO)
+						user.UserGUI(user);
+					
+					
+					else {
+					ElectionInterface eI = new ElectionInterface(user);	
+					}
 					this.setVisible(false);
+					
 				}	
 				else 
-					System.out.println(readObject);
 					switch(readObject){
 					case"<invalid>" : this.tryAgain.setVisible(true);
 						break;

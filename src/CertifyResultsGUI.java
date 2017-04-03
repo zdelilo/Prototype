@@ -111,19 +111,10 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {	
 		if(e.getActionCommand().equals("certify"))
-			try {
-				pwOut.writeObject("<shutdown>");
-				System.exit(0);
-			} catch (IOException e1) {
-				
-				e1.printStackTrace();
-			}
+			this.setVisible(false);
 	}
 	
 	public static void main(String[]args){
-		 MyVoteServer server = new MyVoteServer();
-		 server.start();
-		 server.restore();
-		new CertifyResultsGUI();
+
 	}
 }

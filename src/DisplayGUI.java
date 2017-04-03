@@ -23,9 +23,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
 public class DisplayGUI extends JFrame implements ActionListener{
-	
-	
-	
+
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
@@ -138,13 +136,7 @@ public class DisplayGUI extends JFrame implements ActionListener{
 			/**Confirms completed submission
 	    	 * exits server and system**/
 	    	if(e.getActionCommand().equals("finish"))
-				try {
-					pwOut.writeObject("<shutdown>");
-					System.exit(0);
-				} catch (IOException e1) {
-					
-					e1.printStackTrace();
-				}
+	    		this.setVisible(false);
 	    	
 			
 		}

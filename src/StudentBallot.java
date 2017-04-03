@@ -18,7 +18,6 @@ public class StudentBallot{
 	ObjectOutputStream pwOut;	
 	Socket sock;
 	
-	
 	/**
 	 * @param user
 	 * Re-builds ballot for user to vote

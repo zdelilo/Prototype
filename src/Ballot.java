@@ -32,6 +32,7 @@ public class Ballot extends JFrame implements ActionListener{
         /**Layout and ButtonGroup Components**/
         JPanel panelMain = new JPanel();
         GroupLayout layout = new GroupLayout(panelMain);
+        Election e;
         User user;
         
         /**Collections**/
@@ -52,6 +53,7 @@ public class Ballot extends JFrame implements ActionListener{
 	   	 /**Initialzies Server**/  	
 	    	 startServer();
 	    	 this.user = user;
+	    	
 	    	 confirm = new JButton("Confirm");
 	    	 confirm.setActionCommand("confirm");
 	    	 confirm.addActionListener(this);
@@ -161,7 +163,7 @@ public class Ballot extends JFrame implements ActionListener{
 	    	}
 	    }
 	   
-	    public void startServer(){
+	   public void startServer(){
 			 /**Initialzies Server**/
 			 try {
 					sock = new Socket("127.0.0.1",50000);
@@ -183,9 +185,9 @@ public class Ballot extends JFrame implements ActionListener{
 				}
 		   }
 	    
-	    /**<<<SERVER CONNECTOIN  <vote> >>>
-     	  * saves user's candidate vote to server
-     	  * **/  
+    /**<<<SERVER CONNECTOIN  <vote> >>>
+ 	  * saves user's candidate vote to server
+ 	  * **/  
 	   public void addVotes(String race, int selectedIndex){
 		   try {
 	 	    	pwOut.writeObject("<vote>");

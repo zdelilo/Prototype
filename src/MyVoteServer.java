@@ -13,10 +13,12 @@ import java.util.List;
 
 public class MyVoteServer extends Thread  {
 
-	static HashMap<String, User> users;/****/
-	static HashMap<String, User> votedUsers;
-	static HashMap<String, List<Candidate>> votes;
-	static HashMap<String, Integer> summaryStatistcs;
+	
+	static HashMap<String, Election> elections;
+	static Election election;
+	static HashMap<String, User> users;
+	String selectedE;
+
    
 	ServerSocket ss;
 	
@@ -26,9 +28,7 @@ public class MyVoteServer extends Thread  {
 	 */
 	MyVoteServer(){
 		 users = new HashMap<String,User>();
-		 votedUsers = new HashMap<String, User>();
-		 votes = new HashMap<String, List<Candidate>>();
-		 summaryStatistcs = new HashMap<String, Integer>();
+		 elections = new  HashMap<String, Election>();
 		 API.deserializeAPI();
 	}
 	
@@ -66,7 +66,7 @@ public class MyVoteServer extends Thread  {
 	}
 	
 	public boolean voted(String username){
-		return votedUsers.containsKey(username);
+		return election.votedUsers.containsKey(username);
 	}
 	
 	/**
@@ -77,6 +77,21 @@ public class MyVoteServer extends Thread  {
 		return users.get(username.trim());
 	}
 	
+	public Election[] getElections(){
+		return elections.values().toArray(new Election[0]);
+	}
+	public String selectedElection(String selected){
+		selectedE = selected;
+		election = elections.get(selectedE);
+		return selectedE;
+	}
+	public void addElection( Election e){
+		elections.put(e.election_title, e);
+		System.out.println(elections);
+		backup();
+	}
+	
+	
 	/**
 	 * @param race
 	 * @param candidates
@@ -85,7 +100,9 @@ public class MyVoteServer extends Thread  {
 	 * candidates has | candidate name | vote tallies |
 	 **/
 	public void addRace(RacePanel race) {
-		votes.put(race.race_title, race.candidates);
+		System.out.println("selectedE " + election);
+		election.votes.put(race.race_title, race.candidates);
+		System.out.println(elections);
 		backup();
 	}
 	
@@ -99,18 +116,18 @@ public class MyVoteServer extends Thread  {
 	 **/
 	public void addVote(String race, int selected, String votedUser){
 		
-		votes.get(race.trim()).get(selected).incramentTally();
-		votedUsers.put(votedUser, users.get(votedUser));
+		election.votes.get(race.trim()).get(selected).incramentTally();
+		election.votedUsers.put(votedUser, users.get(votedUser));
 		backup();
 	}
 	
 	/** @return users in api**/
 	public User[] getVotedUsers(){
-		return  votedUsers.values().toArray(new User[0]);
+		return  election.votedUsers.values().toArray(new User[0]);
 	}
 	
 	public HashMap<String, List<Candidate>> getVotes(){
-		return votes;
+		return election.votes;
 	}
 	
 	/**
@@ -121,8 +138,8 @@ public class MyVoteServer extends Thread  {
 		
 		try{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
-			apiOut.writeObject(votedUsers);
-			apiOut.writeObject(votes);
+			apiOut.writeObject(elections);
+			//apiOut.writeObject(election.votes);
 			apiOut.close();
 			System.out.println("Backup Complete!");
 
@@ -141,10 +158,10 @@ public class MyVoteServer extends Thread  {
 		try{
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("BackupAPI.ser"));
-			votedUsers = (HashMap<String, User>) apiIn.readObject();
-			votes = (HashMap<String, List<Candidate>>) apiIn.readObject();
+			elections = (HashMap<String, Election>) apiIn.readObject();
+			//election.votes = (HashMap<String, List<Candidate>>) apiIn.readObject();
 			System.out.println("Restoration Complete!");
-			System.out.println(votes);
+			System.out.println(elections);
 			apiIn.close();
 			
 		}catch(IOException e){
@@ -169,7 +186,7 @@ public class MyVoteServer extends Thread  {
 		new MyVoteServer().start();
 		//backup();
 		restore();
-
+		
 	}
 	
 	
