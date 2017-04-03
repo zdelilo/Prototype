@@ -83,6 +83,13 @@ public class MyVoteHandler extends Thread {
 				String username = (String)brIn.readObject();
 				pwOut.writeObject(server.voted(username));
 			break;
+			case "<updateSummary>":
+				String data = (String)brIn.readObject();
+				server.updateSummaryStatistics(data);
+			break;
+			case "<getStatistics>":
+				pwOut.writeObject(server.getStatistics());
+			break;
 			default:
 				pwOut.writeObject("<noQuery>");
 			}

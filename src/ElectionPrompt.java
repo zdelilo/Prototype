@@ -81,24 +81,29 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent e){
+		/**User confirms Created Electin | Election title and EC ID are retrieved      |
+		 * 								 | Election is added to HSO and User Interface | 
+		 * 								 | Election is uploaded to server              |
+		 * **/
 		if(e.getActionCommand().equals("confirm")){
 			
 			String electionName = txtElectionName.getText();
 			String commissionerID = txtCommissionerID.getText();
+			
 			election.addList(electionName);
 			eInterface.addElection(electionName);
 			this.setVisible(false);
 			uploadElection(eInterface);
-
 		}
 	}
 	
+	/**
+	 * Adds election to server by providing Election
+	 * @param e Election Interface*/
 	public void uploadElection(ElectionInterface e){
 		try {
-			
 			pwOut.writeObject("<addElection>");
-			pwOut.writeObject(new Election(txtElectionName.getText()));
-			
+			pwOut.writeObject(new Election(txtElectionName.getText()));	
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

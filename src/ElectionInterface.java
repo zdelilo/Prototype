@@ -91,6 +91,9 @@ public class ElectionInterface extends JFrame implements ActionListener{
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		/**If user confirms Election selection | selected election is written to server    |
+		 * 									   | User is checked if voted                  |
+		 * 									   | User GUI brought up for selected Election |**/
 		if(e.getActionCommand().equals("confirm") && !list.isSelectionEmpty()){
 			String selectedE = list.getSelectedValue().toString();
 			try {
@@ -102,18 +105,22 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				this.setVisible(false);
 				
 				}
-				else{
+				else{/**Displays error message if user has voted**/
 					votedError.setVisible(true);
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		}
-		
+		/**User selects exit button | program exits |**/
 		if(e.getActionCommand().equals("exit"))
 			shutdown();
 	}
 	
+	/**
+	 * Creates GUI that lists all available elections
+	 * @param eName - name of election
+	 */
 	public void addElection(String eName) {
 		model.addElement(eName);
 		
@@ -128,6 +135,10 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				);
 	}
 	
+	/**
+	 * @param username - name of user
+	 * @return check of user has voted or not | true | false |
+	 */
 	public boolean hasVoted(String username){
 	boolean voted = true;
 		try {
@@ -141,6 +152,9 @@ public class ElectionInterface extends JFrame implements ActionListener{
 		return voted;
 	}
 	
+	/**
+	 * Adds Confimation and Exit buttons to end of GUI
+	 */
 	public void addConfirm(){
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -158,6 +172,7 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				);
 	}
 	
+	/**Retreves array of current Elections from Server**/
 	public void getElections(){
 		try {
 			pwOut.writeObject("<getElections>");
@@ -168,6 +183,7 @@ public class ElectionInterface extends JFrame implements ActionListener{
 		}
 	}
 	
+	/**Starts Server**/
 	public void startServer(){
 		 /**Initialzies Server**/
 		 try {
@@ -180,7 +196,9 @@ public class ElectionInterface extends JFrame implements ActionListener{
 			}
 	 }
    
-   public void shutdown(){
+   /**Disconnects Socket and server 
+    * Shuts down system**/
+public void shutdown(){
 		   try {
 				pwOut.writeObject("<shutdown>");
 				System.exit(0);

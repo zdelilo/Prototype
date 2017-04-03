@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,7 @@ import javax.swing.border.LineBorder;
 public class CertifyResultsGUI extends JFrame implements ActionListener {
 	
 	User[] users;
-	
+	HashMap<String, Integer> summary;
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
@@ -33,6 +34,7 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 	CertifyResultsGUI(){
 		
 		startServer();
+		/**Retrieves and initializes array of users from server**/
 		certify();
 		
 		/**Panel Declarations**/
@@ -51,18 +53,26 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 		c.gridy = -1;
 
 		int i;
+		/**Loops through all users and retrieves demographic information**/
 	   	for(i = 0; i < users.length; i++){
 	   		
 	   		c.gridy = i;
+	   		
+	   		 String[] data = users[i].toString().split(" ");
+	   		 System.out.println(Arrays.toString(data));
+	   		 updateSummaryStatistics(data);
+	   		 
 	   		 userP.add(new JLabel(users[i].toString()));
 	   		 userP.setBackground(MyColors.kaki);
 	   		 userP.setBorder(new LineBorder(Color.black,4));
 	   		 resultsPanel.add(userP,c);
 	   		 userP = new JPanel();
-	   		
 	   	}
-	   	
 	   	c.gridy = i+1;
+	   	getSummary();
+		resultsPanel.add(new JLabel(createSummary(summary)),c);
+		
+	   	c.gridy = i+2;
 	   	resultsPanel.add(certify,c);
 	   	resultsPanel.setBackground(Color.white);
 	   	resultsPanel.setBorder(new LineBorder(Color.black,4));
@@ -98,6 +108,8 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 			}
 	 }
 
+	/**<<SERVER CONNECTION>>
+	 * Retrieves and initializes array of users from server**/
 	public void certify(){
 		try {
 			
@@ -112,6 +124,41 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {	
 		if(e.getActionCommand().equals("certify"))
 			this.setVisible(false);
+	}
+	
+	public void updateSummaryStatistics(String[] data){
+		
+		for(String d:data){
+			try {
+				pwOut.writeObject("<updateSummary>");
+				pwOut.writeObject(d);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	public void getSummary(){
+		try {
+			pwOut.writeObject("<getStatistics>");
+			summary = (HashMap<String, Integer>)brIn.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String createSummary(HashMap<String, Integer> s){
+		
+		String[] keys = s.keySet().toArray(new String[0]);
+		String result = "";
+		
+		for(String k: keys){
+			if(s.get(k).intValue() != 0)
+				result += k + ":" + s.get(k).intValue() + " ";
+		}
+		
+		return result;
 	}
 	
 	public static void main(String[]args){

@@ -151,28 +151,34 @@ public class Login extends JFrame implements ActionListener{
 				/***Reads from server to see if username has been validated (or not)**/
 				pwOut.writeObject("<login> " + inputUsername + " " + inputPassword);
 				String readObject = (String) brIn.readObject();
+				 
 				
-				/**Validates user, then user object is read from class**/
-				if(readObject.equals("<validated>")){
-					
-					user = (User) brIn.readObject();
-					if(user instanceof HSO){
-						user.UserGUI(user);
-						this.setVisible(false);
-					}
-					else 
-						if(electionUp()){
-						ElectionInterface eI = new ElectionInterface(user);	
-						this.setVisible(false);
-					}
-					else{
-						electionDown.setVisible(true);
-					}
-				}	
-				else 
-					switch(readObject){
-					case"<invalid>" : this.tryAgain.setVisible(true);
-						break;
+				switch(readObject){
+				/**Valid Login Case**/
+				case"<validated>":
+						user = (User) brIn.readObject();
+						/**HSO does not view current elections 
+						 * | list of elections included in interface |
+						 ***/
+						if(user instanceof HSO){
+							user.UserGUI(user);
+							this.setVisible(false);
+						}
+						else
+							/**Error check | is election up? | yes show interface | no display error message|**/
+							if
+							(electionUp()){
+							ElectionInterface eI = new ElectionInterface(user);	
+							this.setVisible(false);
+							}
+						else
+							electionDown.setVisible(true);
+						
+					break;
+					/**Invalid Login Case**/
+					case"<invalid>": 
+						this.tryAgain.setVisible(true);
+					break;
 					}
 				
 			} catch (IOException | ClassNotFoundException e1) {
@@ -182,6 +188,7 @@ public class Login extends JFrame implements ActionListener{
 		}
 	}
 	
+	/**@return Check if election is up | true | false |**/
 	public boolean electionUp(){
 		boolean electionUp = true;
 		try {

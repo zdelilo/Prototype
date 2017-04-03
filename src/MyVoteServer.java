@@ -94,7 +94,19 @@ public class MyVoteServer extends Thread  {
 	public boolean electionUp(){
 		return !elections.isEmpty();
 	}
-	
+	public void updateSummaryStatistics(String data){
+		System.out.println(data);
+		System.out.println(election.summaryStatistcs.get(data));
+		
+		if(election.summaryStatistcs.containsKey(data)){
+			int value = election.summaryStatistcs.get(data.trim()).intValue();
+			election.summaryStatistcs.put(data.trim(), value+1);
+			System.out.println(election.summaryStatistcs);
+		}
+	}
+	public HashMap<String, Integer> getStatistics(){
+		return election.summaryStatistcs;
+	}
 	/**
 	 * @param race
 	 * @param candidates

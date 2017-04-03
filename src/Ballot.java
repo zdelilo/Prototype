@@ -87,8 +87,8 @@ public class Ballot extends JFrame implements ActionListener{
 	     */
 	    public void addBallot(RacePanel p, boolean save) {
 	    	
-	    	/**Panels - used to compartmentalize neccessary ballot componets
-	    	 * race and candidates**/
+	       /**Panels - used to compartmentalize neccessary ballot componets
+	    	* race and candidates**/
 	    	panels.add(p);
 	    	/**Saves race and candidates to server**/
 	    	addRace(p);
@@ -145,12 +145,12 @@ public class Ballot extends JFrame implements ActionListener{
 	    
 	    
 	    public void actionPerformed(ActionEvent e){
-	    	/**Confirms completed submission
-	    	 * exits server and system**/
+	    	/**User selects finish button | system disconnects from server and closes |**/
 	    	if(e.getActionCommand().equals("finish"))
 				shutdown();
 	    	
-	    	/**Sends vote to server**/
+	    	/**User confirms selections | race title and selected candidate regrieved |
+	    	 * 							| Votes are added to system                   |**/
 	    	if(e.getActionCommand().equals("confirm"))
 	    		
 	    	for(int i = 0; i < panels.size();i++){
@@ -169,7 +169,6 @@ public class Ballot extends JFrame implements ActionListener{
 					sock = new Socket("127.0.0.1",50000);
 					pwOut = new ObjectOutputStream(sock.getOutputStream());
 					brIn = new ObjectInputStream(sock.getInputStream());    	
-				
 			 	} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -179,7 +178,6 @@ public class Ballot extends JFrame implements ActionListener{
 			   try {
 					pwOut.writeObject("<shutdown>");
 					System.exit(0);
-				
 			   } catch (IOException e1) {				
 					e1.printStackTrace();
 				}

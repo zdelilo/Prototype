@@ -118,14 +118,12 @@ public class HSOInterface extends JFrame implements ActionListener{
 
 						));
 
-
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
 		int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
 		setLocation(x, y);
 		setVisible(true);
-
-		
+	
 	}
 
 	public void addList(String name){
@@ -167,8 +165,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
 		setLocation(x, y);
 		setVisible(true);
-		
-		
+
 	}
 	
 	public void actionPerformed(ActionEvent e){

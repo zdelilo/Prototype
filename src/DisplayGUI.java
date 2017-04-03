@@ -102,7 +102,13 @@ public class DisplayGUI extends JFrame implements ActionListener{
          this.setVisible(true);  
 	        
 	}
-	 
+	 public void actionPerformed(ActionEvent e) {
+			/**Confirms completed submission
+	    	 * exits server and system**/
+	    	if(e.getActionCommand().equals("finish"))
+	    		this.setVisible(false);
+
+		} 
 	 /**
 	 * @throws IOException
 	 * @throws ClassNotFoundException
@@ -119,7 +125,8 @@ public class DisplayGUI extends JFrame implements ActionListener{
 		return winners;
 	 }
 	 
-	 public void startServer(){
+	 /**Starts Server Components**/
+	public void startServer(){
 		 /**Initialzies Server**/
 		 try {
 				sock = new Socket("127.0.0.1",50000);
@@ -131,15 +138,6 @@ public class DisplayGUI extends JFrame implements ActionListener{
 			}
 	 }
 	 
-
-		public void actionPerformed(ActionEvent e) {
-			/**Confirms completed submission
-	    	 * exits server and system**/
-	    	if(e.getActionCommand().equals("finish"))
-	    		this.setVisible(false);
-	    	
-			
-		}
 	 public static void main(String[]args){
 		 MyVoteServer server = new MyVoteServer();
 		 server.start();

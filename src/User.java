@@ -32,11 +32,9 @@ public abstract class User implements java.io.Serializable{
 	public abstract void UserGUI(User user);
 
 	public String toString(){
-		String result = "[ " + username    + "  " +
-						   gender   + "  " + 
-						   rank     + "  " +
-						   major    + "  " +
-						   college  + " ]  ";
+		String result =   gender   + " " + rank  + " " +
+						   major    + " " +
+						   college  ;
 		return result;
 	}
 	public static void main(String[]args){
