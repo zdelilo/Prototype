@@ -197,7 +197,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		}
 	
 		if(e.getActionCommand().equals("finish"))
-			shutdown();
+			this.setVisible(false);
 	}
 
 	
