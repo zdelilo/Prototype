@@ -30,7 +30,8 @@ public class Login extends JFrame implements ActionListener{
 	JTextField usernameFLD;
 	JTextField passwordFLD;
 	JLabel tryAgain;
-	JLabel votedError;
+	JLabel electionDown;
+
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
@@ -70,10 +71,10 @@ public class Login extends JFrame implements ActionListener{
 		tryAgain.setIcon(MyImages.frownIcon);
 		tryAgain.setVisible(false);
 		
-		votedError = new JLabel();
-		votedError.setText("Oops! Seems as if you've already voted!");
-		votedError.setIcon(MyImages.yellowFrown);
-		votedError.setVisible(false);
+		electionDown = new JLabel();
+		electionDown.setText("Well this is awkward... No elections present...");
+		electionDown.setIcon(MyImages.xEyesIcon);
+		electionDown.setVisible(false);
 		
 		/**Adding componets to Panels**/
 		mainPanel.setBackground(MyColors.deepBlue);
@@ -115,7 +116,7 @@ public class Login extends JFrame implements ActionListener{
 		c.gridy = 4;
 		tablePanel.add(tryAgain,c);
 		c.gridy = 5;
-		tablePanel.add(votedError,c);
+		tablePanel.add(electionDown,c);
 		tablePanel.setBorder(new LineBorder(Color.white,3));
 		tablePanel.setBackground(Color.white);
 		
@@ -155,21 +156,22 @@ public class Login extends JFrame implements ActionListener{
 				if(readObject.equals("<validated>")){
 					
 					user = (User) brIn.readObject();
-					if(user instanceof HSO)
+					if(user instanceof HSO){
 						user.UserGUI(user);
-					
-					
-					else {
-					ElectionInterface eI = new ElectionInterface(user);	
+						this.setVisible(false);
 					}
-					this.setVisible(false);
-					
+					else 
+						if(electionUp()){
+						ElectionInterface eI = new ElectionInterface(user);	
+						this.setVisible(false);
+					}
+					else{
+						electionDown.setVisible(true);
+					}
 				}	
 				else 
 					switch(readObject){
 					case"<invalid>" : this.tryAgain.setVisible(true);
-						break;
-					case"<hasVoted>": this.votedError.setVisible(true);
 						break;
 					}
 				
@@ -179,6 +181,18 @@ public class Login extends JFrame implements ActionListener{
 			}
 		}
 	}
+	
+	public boolean electionUp(){
+		boolean electionUp = true;
+		try {
+			pwOut.writeObject("<electionUp>");
+			electionUp = (boolean)brIn.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return electionUp;
+	}
+	
 	public static void main(String[]args){
 		 MyVoteServer server = new MyVoteServer();
 		 server.start();

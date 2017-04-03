@@ -66,6 +66,7 @@ public class MyVoteServer extends Thread  {
 	}
 	
 	public boolean voted(String username){
+		System.out.println("enter: " + election.votedUsers.containsKey(username));
 		return election.votedUsers.containsKey(username);
 	}
 	
@@ -90,7 +91,9 @@ public class MyVoteServer extends Thread  {
 		System.out.println(elections);
 		backup();
 	}
-	
+	public boolean electionUp(){
+		return !elections.isEmpty();
+	}
 	
 	/**
 	 * @param race

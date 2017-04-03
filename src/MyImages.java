@@ -9,4 +9,5 @@ public class MyImages {
     static ImageIcon frownIcon = new ImageIcon("frown.png");
     static ImageIcon trophyIcon = new ImageIcon("trophy.png");
     static ImageIcon yellowFrown = new ImageIcon("yellowFrown.png");
+    static ImageIcon xEyesIcon = new ImageIcon("xEyesIcon.png");
 }

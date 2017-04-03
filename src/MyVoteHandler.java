@@ -33,14 +33,10 @@ public class MyVoteHandler extends Thread {
 			switch(myVoteCommands[0]){
 			
 			case "<login>":
-				if(validateLogin(myVoteCommands[1],myVoteCommands[2])){
-					//if(server.users.get(myVoteCommands[1]) instanceof HSO||server.users.get(myVoteCommands[1]) instanceof ElectionCommissioner || !server.voted(myVoteCommands[1]))
-					{
+				if(validateLogin(myVoteCommands[1],myVoteCommands[2])){{
 						pwOut.writeObject("<validated>");
 						pwOut.writeObject(server.getUser(myVoteCommands[1]));
 					}
-					//else
-					//pwOut.writeObject("<hasVoted>");
 				}
 				else	
 				pwOut.writeObject("<invalid>");
@@ -68,6 +64,9 @@ public class MyVoteHandler extends Thread {
 			case "<certify>":
 				pwOut.writeObject(server.getVotedUsers());
 			break;
+			case"<electionUp>":
+				pwOut.writeObject(server.electionUp());
+			break;
 			case "<addElection>":
 			Election e = (Election)brIn.readObject();
 			server.addElection(e);
@@ -79,6 +78,11 @@ public class MyVoteHandler extends Thread {
 			case"<selectedElection>":
 				String selectedE = (String)brIn.readObject();
 				server.selectedElection(selectedE);
+			break;
+			case "<hasVoted>":
+				String username = (String)brIn.readObject();
+				pwOut.writeObject(server.voted(username));
+			break;
 			default:
 				pwOut.writeObject("<noQuery>");
 			}

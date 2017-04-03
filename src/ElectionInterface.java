@@ -14,6 +14,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
@@ -29,7 +30,9 @@ public class ElectionInterface extends JFrame implements ActionListener{
     JPanel panelMain = new JPanel();
     JPanel pnlList = new JPanel();
     GroupLayout layout = new GroupLayout(panelMain);
-    JButton confirm; 
+    JButton confirm;
+    JButton exit; 
+	JLabel votedError;
     User user;
     
     /**Server Stuff**/
@@ -43,7 +46,16 @@ public class ElectionInterface extends JFrame implements ActionListener{
 		confirm = new JButton("Confirm");
     	confirm.setActionCommand("confirm");
     	confirm.addActionListener(this);
+    	
+    	exit = new JButton("Exit");
+    	exit.setActionCommand("exit");
+    	exit.addActionListener(this);
     	 
+    	votedError = new JLabel();
+		votedError.setText("Oops! Seems as if you've already voted!");
+		votedError.setIcon(MyImages.yellowFrown);
+		votedError.setVisible(false);
+    	
     	list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
  		list.setVisibleRowCount(4);
  		list.setVisible(true);
@@ -84,14 +96,22 @@ public class ElectionInterface extends JFrame implements ActionListener{
 			try {
 				pwOut.writeObject("<selectedElection>");
 				pwOut.writeObject(selectedE);
+				
+				if(!hasVoted(user.username)){
 				user.UserGUI(user);
 				this.setVisible(false);
 				
+				}
+				else{
+					votedError.setVisible(true);
+				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			this.setVisible(false);
 		}
+		
+		if(e.getActionCommand().equals("exit"))
+			shutdown();
 	}
 	
 	public void addElection(String eName) {
@@ -108,15 +128,33 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				);
 	}
 	
+	public boolean hasVoted(String username){
+	boolean voted = true;
+		try {
+			pwOut.writeObject("<hasVoted>");
+			pwOut.writeObject(username);
+			//System.out.println((String)brIn.readObject());
+			voted = (boolean)brIn.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return voted;
+	}
+	
 	public void addConfirm(){
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(confirm))
+						.addComponent(exit)
+						.addComponent(votedError)
+				
 				);
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(confirm))
+						.addComponent(exit)
+						.addComponent(votedError)
 				);
 	}
 	
