@@ -67,7 +67,7 @@ public class Login extends JFrame implements ActionListener{
 		login.setIconTextGap(10);
 		
 		tryAgain = new JLabel();
-		tryAgain.setText("Incorrect username of password. Please Try Again...");
+		tryAgain.setText("Incorrect username or password. Please Try Again...");
 		tryAgain.setIcon(MyImages.frownIcon);
 		tryAgain.setVisible(false);
 		
