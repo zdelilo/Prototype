@@ -90,7 +90,7 @@ public class API {
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("MyVoteAPI.ser"));
 			MyVoteServer.users = (HashMap<String,User>) apiIn.readObject();
 			Election.summaryStatistcs = (HashMap<String,Integer>) apiIn.readObject();
-			System.out.println(Election.summaryStatistcs);
+			//System.out.println(Election.summaryStatistcs);
 			System.out.println("Deserialization Complete!");
 			apiIn.close();
 			

@@ -141,7 +141,8 @@ public class Login extends JFrame implements ActionListener{
 	* 		|Invalid - User is prompted to try again
 	* **/
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals("login")){
+		if(e.getActionCommand().equals("login"))
+		{
 			inputUsername = usernameFLD.getText();
 			inputPassword = passwordFLD.getText();
 				/**Initialize socket to access server**/
@@ -157,17 +158,18 @@ public class Login extends JFrame implements ActionListener{
 				/**Valid Login Case**/
 				case"<validated>":
 						user = (User) brIn.readObject();
-						/**HSO does not view current elections 
-						 * | list of elections included in interface |
-						 ***/
-						if(user instanceof HSO){
+						
+						/**HSO does not view current elections**/
+						if(user instanceof HSO)
+						{
 							user.UserGUI(user);
 							this.setVisible(false);
 						}
+						/**Error check | is election up? | yes show interface | no display error message|**/
 						else
-							/**Error check | is election up? | yes show interface | no display error message|**/
 							if
-							(electionUp()){
+							(electionUp())
+							{
 							ElectionInterface eI = new ElectionInterface(user);	
 							this.setVisible(false);
 							}

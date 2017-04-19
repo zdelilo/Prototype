@@ -67,7 +67,8 @@ public class ElectionInterface extends JFrame implements ActionListener{
 		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
 		
 		getElections();
-		for(Election e: elections){
+		for(Election e: elections)
+		{
 			this.addElection(e.election_title);
 		}
 		addConfirm();
@@ -100,12 +101,14 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				pwOut.writeObject("<selectedElection>");
 				pwOut.writeObject(selectedE);
 				
-				if(!hasVoted(user.username)){
+				if(!hasVoted(user.username))
+				{
 				user.UserGUI(user);
 				this.setVisible(false);
-				
 				}
-				else{/**Displays error message if user has voted**/
+				
+				else
+				{/**Displays error message if user has voted**/
 					votedError.setVisible(true);
 				}
 			} catch (IOException e1) {
@@ -146,7 +149,8 @@ public class ElectionInterface extends JFrame implements ActionListener{
 			pwOut.writeObject(username);
 			//System.out.println((String)brIn.readObject());
 			voted = (boolean)brIn.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException | ClassNotFoundException e) 
+		{
 			e.printStackTrace();
 		}
 		return voted;
@@ -177,8 +181,8 @@ public class ElectionInterface extends JFrame implements ActionListener{
 		try {
 			pwOut.writeObject("<getElections>");
 			elections = (Election[]) brIn.readObject();
-		} catch (IOException | ClassNotFoundException e) {
-			
+		} catch (IOException | ClassNotFoundException e) 
+		{
 			e.printStackTrace();
 		}
 	}
@@ -191,7 +195,8 @@ public class ElectionInterface extends JFrame implements ActionListener{
 				pwOut = new ObjectOutputStream(sock.getOutputStream());
 				brIn = new ObjectInputStream(sock.getInputStream());    	
 			
-		 	} catch (IOException e) {
+		 	} catch (IOException e) 
+		 	{
 				e.printStackTrace();
 			}
 	 }
@@ -203,7 +208,8 @@ public void shutdown(){
 				pwOut.writeObject("<shutdown>");
 				System.exit(0);
 			
-		   } catch (IOException e1) {				
+		   } catch (IOException e1) 
+		   {				
 				e1.printStackTrace();
 			}
 	   }

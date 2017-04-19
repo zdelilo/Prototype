@@ -196,12 +196,15 @@ public class MyVoteServer extends Thread  {
 		}
 		System.exit(0);
 	}
+	
+	public static void resetElection(){
+		new MyVoteServer().start();
+		backup();
+	}
 
 	public static void main(String[]args){
-		new MyVoteServer().start();
-		//backup();
+		//resetElection();
 		restore();
-		
 	}
 	
 	

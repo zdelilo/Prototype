@@ -192,7 +192,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 			}
 			
 			else if(e.getActionCommand().equals("Disqualify")){
-
+				new CurrentElection(this);
 			}
 		}
 	

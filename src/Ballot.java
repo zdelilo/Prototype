@@ -178,7 +178,7 @@ public class Ballot extends JFrame implements ActionListener{
 			   try {
 					pwOut.writeObject("<shutdown>");
 					System.exit(0);
-			   } catch (IOException e1) {				
+			    } catch (IOException e1) {				
 					e1.printStackTrace();
 				}
 		   }
@@ -193,7 +193,8 @@ public class Ballot extends JFrame implements ActionListener{
 				pwOut.writeObject(selectedIndex);
 				pwOut.writeObject(user.username);
 				confirm.setVisible(false);
-			} catch (IOException j) {
+			} catch (IOException j) 
+		   	{
 				j.printStackTrace();
 			}
 	   }
@@ -207,7 +208,8 @@ public class Ballot extends JFrame implements ActionListener{
 	 	    	pwOut.writeObject("<saveballot>");
 				pwOut.writeObject(panels);
 			
-			} catch (IOException e) {
+			} catch (IOException e) 
+  	 	    {
 				e.printStackTrace();
 			}
 	    }
@@ -222,8 +224,8 @@ public class Ballot extends JFrame implements ActionListener{
 		 	    	pwOut.writeObject("<addRace>");
 		 	    	pwOut.writeObject(p);
 		 	    	
-				} catch (IOException j) {
-					
+				} catch (IOException j) 
+	    		{
 					j.printStackTrace();
 				}
 	    }

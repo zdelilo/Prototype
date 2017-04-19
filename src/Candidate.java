@@ -51,7 +51,7 @@ public class Candidate implements java.io.Serializable {
 	}
 
 	public String toString(){
-		String result = name + " Tally: " + tally;
+		String result = name ;
 		return result;
 	}
 }

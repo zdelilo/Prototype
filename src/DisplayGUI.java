@@ -49,7 +49,6 @@ public class DisplayGUI extends JFrame implements ActionListener{
 		 c.insets = new Insets(9,10,9, 10);
 		 
 		 /**Adds winners of race go GUI display**/
-		 
 		 JButton trophy = new JButton();
 		 trophy.setIcon(MyImages.trophyIcon);
 		 trophy.setText(" WINNERS OF THE ELECTION RACES!!  ");
