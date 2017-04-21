@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -150,19 +151,37 @@ public class Ballot extends JFrame implements ActionListener{
 				shutdown();
 	    	
 	    	/**User confirms selections | race title and selected candidate regrieved |
-	    	 * 							| Votes are added to system                   |**/
+	    	 * 							| Votes are added to system                   |
+	    	 * 							| User's summary statistics are added         |**/
 	    	if(e.getActionCommand().equals("confirm"))
 	    		
-	    	for(int i = 0; i < panels.size();i++){
-	    	
-	    		String race = panels.get(i).race_title;
-	    		String selectedC = selectedCandidates.get(i).getSelection().getActionCommand();
-	    		int selectedIndex = panels.get(i).names.indexOf(selectedC);
-	   	 	    addVotes(race, selectedIndex); 	
-	    		System.out.println(race + " " + selectedC);
+	    	{
+	    		
+		    	for(int i = 0; i < panels.size();i++){
+		    		
+		    		String race = panels.get(i).race_title;
+		    		String selectedC = selectedCandidates.get(i).getSelection().getActionCommand();
+		    		int selectedIndex = panels.get(i).names.indexOf(selectedC);
+		   	 	    addVotes(race, selectedIndex);
+		    		System.out.println(race + " " + selectedC);
+		    	}
+
+		    	updateSummaryStatistics(user);
 	    	}
 	    }
-	   
+	    public void updateSummaryStatistics(User user)
+		{
+			String[] data = user.toString().split(" ");
+	    	for(String d:data)
+			{
+				try 
+				{
+					pwOut.writeObject("<updateSummary>");
+					pwOut.writeObject(d);
+				} 	
+				catch (IOException e) {	e.printStackTrace();	}
+			}
+		}
 	   public void startServer(){
 			 /**Initialzies Server**/
 			 try {
@@ -178,7 +197,7 @@ public class Ballot extends JFrame implements ActionListener{
 			   try {
 					pwOut.writeObject("<shutdown>");
 					System.exit(0);
-			   } catch (IOException e1) {				
+			    } catch (IOException e1) {				
 					e1.printStackTrace();
 				}
 		   }
@@ -193,7 +212,8 @@ public class Ballot extends JFrame implements ActionListener{
 				pwOut.writeObject(selectedIndex);
 				pwOut.writeObject(user.username);
 				confirm.setVisible(false);
-			} catch (IOException j) {
+			} catch (IOException j) 
+		   	{
 				j.printStackTrace();
 			}
 	   }
@@ -207,7 +227,8 @@ public class Ballot extends JFrame implements ActionListener{
 	 	    	pwOut.writeObject("<saveballot>");
 				pwOut.writeObject(panels);
 			
-			} catch (IOException e) {
+			} catch (IOException e) 
+  	 	    {
 				e.printStackTrace();
 			}
 	    }
@@ -222,8 +243,8 @@ public class Ballot extends JFrame implements ActionListener{
 		 	    	pwOut.writeObject("<addRace>");
 		 	    	pwOut.writeObject(p);
 		 	    	
-				} catch (IOException j) {
-					
+				} catch (IOException j) 
+	    		{
 					j.printStackTrace();
 				}
 	    }

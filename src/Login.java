@@ -55,8 +55,8 @@ public class Login extends JFrame implements ActionListener{
 		JPanel myVote = new JPanel();
 		
 		/**Login GUI Components**/
-		 usernameFLD = new JTextField("lepulipati",20);
-		 passwordFLD = new JTextField("password1",20);
+		 usernameFLD = new JTextField("Rnkambara",20);
+		 passwordFLD = new JTextField("helloworld",20);
 		 
 		JLabel userLabel = new JLabel("Username: ");
 		JLabel passLabel = new JLabel("Password: ");
@@ -126,7 +126,7 @@ public class Login extends JFrame implements ActionListener{
 		/**Sets Defaults for main Panel**/
 		this.getContentPane().add(mainPanel);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		this.setSize(530,300);
+		this.setSize(430,300);
         this.setVisible(true);  
         this.setIconImage(MyImages.codeFather.getImage());
         this.getRootPane().setDefaultButton(login);
@@ -141,7 +141,8 @@ public class Login extends JFrame implements ActionListener{
 	* 		|Invalid - User is prompted to try again
 	* **/
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals("login")){
+		if(e.getActionCommand().equals("login"))
+		{
 			inputUsername = usernameFLD.getText();
 			inputPassword = passwordFLD.getText();
 				/**Initialize socket to access server**/
@@ -157,17 +158,18 @@ public class Login extends JFrame implements ActionListener{
 				/**Valid Login Case**/
 				case"<validated>":
 						user = (User) brIn.readObject();
-						/**HSO does not view current elections 
-						 * | list of elections included in interface |
-						 ***/
-						if(user instanceof HSO){
+						
+						/**HSO does not view current elections**/
+						if(user instanceof HSO)
+						{
 							user.UserGUI(user);
 							this.setVisible(false);
 						}
+						/**Error check | is election up? | yes show interface | no display error message|**/
 						else
-							/**Error check | is election up? | yes show interface | no display error message|**/
 							if
-							(electionUp()){
+							(electionUp())
+							{
 							ElectionInterface eI = new ElectionInterface(user);	
 							this.setVisible(false);
 							}

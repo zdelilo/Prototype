@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.ArrayList; 
 import java.util.List;
 
 public class Candidate implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	
 	public String name;
 	private int tally;
 	
@@ -22,9 +20,6 @@ public class Candidate implements java.io.Serializable {
 	public int getTally(){
 		return tally;
 	}
-	public void decrementTally(){
-		tally = tally-1;
-	}
 	
 	public String getName(){
 		return name;
@@ -33,7 +28,6 @@ public class Candidate implements java.io.Serializable {
 	public static List<Candidate> GetWinners(List<Candidate> candidates){
 		Candidate max = candidates.get(0);
    		List<Candidate> winners = new ArrayList<Candidate> ();
-   		
    		
    		for(Candidate tally: candidates){
 			if(max.getTally() == tally.getTally()){
@@ -48,13 +42,6 @@ public class Candidate implements java.io.Serializable {
 			
    		return winners;
 	}
-	public static HashMap<String,Integer> RecountResults(List<Candidate> candidates){
-		HashMap<String,Integer> recountResults = new HashMap<String,Integer>();
-		for(Candidate candidate: candidates){
-			recountResults.put(candidate.getName(), candidate.getTally());
-		}
-		return recountResults;
-	}
 	
 	public static List<Candidate> createCandidates( String[] a) {
 		ArrayList<Candidate> c = new ArrayList<Candidate>();
@@ -62,9 +49,9 @@ public class Candidate implements java.io.Serializable {
 			c.add(new Candidate(name));
 		return c;
 	}
-	
+
 	public String toString(){
-		String result = name + " Tally: " + tally;
+		String result = name ;
 		return result;
 	}
 }

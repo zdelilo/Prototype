@@ -180,7 +180,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 			String selectedE = list.getSelectedValue().toString();
 			initializeElection(selectedE);
 			if(e.getActionCommand().equals("Recount")){
-				new RecountGUI();
+				new CurrentElection(this);
 			}
 			else if(e.getActionCommand().equals("Certify")){
 				
@@ -192,7 +192,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 			}
 			
 			else if(e.getActionCommand().equals("Disqualify")){
-				new DisqualifyGUI();
+				new CurrentElection(this);
 			}
 		}
 	

@@ -21,7 +21,7 @@ public class CurrentElection extends JFrame implements ActionListener{
 		JPanel panelCommissioner = new JPanel();
 		JPanel panelCandidates = new JPanel();
 		
-		lblElectionName = new JLabel("Election Name:  " + election.getElection());
+		//lblElectionName = new JLabel("Election Name:  " + election.getElection());
 		
 		/**Set Defaults for main panel | allows enter key | top bar icon**/
         this.getRootPane().setDefaultButton(done);
@@ -32,7 +32,15 @@ public class CurrentElection extends JFrame implements ActionListener{
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         panelMain.setBackground(MyColors.deepBlue);
         
-        panelElection.add(lblElectionName);
+        JLabel temp = new JLabel("Feature Coming Soon...");
+        
+        JButton exit = new JButton("Exit");
+        exit.setActionCommand("exit");
+        exit.addActionListener(this);
+	   	
+        //panelElection.add(lblElectionName);
+        panelElection.add(temp);
+        panelElection.add(exit);
         
         layout.setHorizontalGroup(layout.createSequentialGroup()
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -56,9 +64,9 @@ public class CurrentElection extends JFrame implements ActionListener{
 	
 	
 	
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equals("exit"))
+			this.setVisible(false);
 	}
 
 }
