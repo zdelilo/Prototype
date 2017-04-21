@@ -61,6 +61,14 @@ public class MyVoteHandler extends Thread {
 			
 			case "<getVotes>":
 				pwOut.writeObject(server.getVotes());
+			break;
+			case "<getRecount>":
+				pwOut.writeObject(server.getRecount());
+				break;
+				
+			case "<disqualify>":
+				pwOut.writeObject(server.getTally(myVoteCommands[1],myVoteCommands[2],myVoteCommands[3]));
+				break;
 			case "<certify>":
 				pwOut.writeObject(server.getVotedUsers());
 			break;

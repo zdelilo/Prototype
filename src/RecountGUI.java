@@ -22,52 +22,65 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
-public class DisplayGUI extends JFrame implements ActionListener{
+public class RecountGUI extends JFrame implements ActionListener{
 
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
 	
-	 DisplayGUI() {
+	RecountGUI() {
 		
 		 startServer();
 		
-		
-		 HashMap<String, List<Candidate>> map =  getWinners();
-		 String[] races = map.keySet().toArray(new String[0]);
-		 List<Candidate>[] winners = map.values().toArray(new List[0]);
-		 
+		 HashMap<String, List<Candidate>> recountElections =getRecountDetails();
+		 String[] race = recountElections.keySet().toArray(new String[0]);
+		 List<Candidate>[] candidates = recountElections.values().toArray(new List[0]);
+		 	 
 		 JPanel mainPanel = new JPanel(new GridBagLayout());	
 		 mainPanel.setBackground(Color.white);
-		 JPanel winnerPanel = new JPanel(new GridBagLayout());
+		 JPanel recountPanel = new JPanel(new GridBagLayout());
 		 JPanel raceP = new JPanel();
-		 JPanel winnerP = new JPanel();
+		 JPanel candidatesP = new JPanel();
 		 raceP.setBackground(MyColors.paleTurquoise);
 		 GridBagConstraints c = new GridBagConstraints();
+		 GridBagConstraints v = new GridBagConstraints();
+		 
 		 
 		 c.fill = GridBagConstraints.HORIZONTAL;
 		 c.insets = new Insets(9,10,9, 10);
+		 v.fill = GridBagConstraints.VERTICAL;
+		 v.insets = new Insets(9,10,9, 10);
 		 
 		 /**Adds winners of race go GUI display**/
 		 
 		 JButton trophy = new JButton();
-		 trophy.setIcon(MyImages.trophyIcon);
-		 trophy.setText(" WINNERS OF THE ELECTION RACES!!  ");
+		 trophy.setText("Recount of the Election Races!  ");
+		 
 		 trophy.setBackground(Color.white);
 		 trophy.setBorder(new LineBorder(MyColors.gold,3));
 		 trophy.setIconTextGap(4);
 		 c.gridy = 1;
-		 winnerPanel.add(trophy,c);
+		 mainPanel.add(trophy,v);
 		 
-		 int i;
-		 for(i = 0; i< races.length; i++)
+		 int k=0;
+		 for(int i = 0; i< race.length; i++)
 		 {
-			 c.gridy = i+2;
-			 
 			 raceP.setBorder(new LineBorder(MyColors.gold,4));
-			 raceP.add(new JLabel(races[i]));
-			 raceP.add(new JLabel(Candidate.GetWinners(winners[i]).toString()));
-			 winnerPanel.add(raceP,c);
+			 raceP.add(new JLabel(race[i]));		 
+			 
+			 for(int j=0;j< candidates[i].size();j++)
+			 {
+				 c.gridy = i+4;	
+				 
+			 candidatesP.setBorder(new LineBorder(MyColors.gold,4));
+			 candidatesP.add(new JLabel(candidates[i].get(j).getName()));
+			 candidatesP.add(new JLabel(String.valueOf(candidates[i].get(j).getTally())));
+			 raceP.add(candidatesP,c);
+			 candidatesP = new JPanel();
+			 
+			 }
+			 
+			 recountPanel.add(raceP,c);
 			 raceP = new JPanel();
 			 raceP.setBackground(MyColors.paleTurquoise);
 		 }
@@ -79,20 +92,22 @@ public class DisplayGUI extends JFrame implements ActionListener{
          finish.setBorder(new LineBorder(MyColors.kaki,4));
          finish.setBackground(Color.white);
 		
-		 c.gridy = i+2;
-         winnerPanel.add(finish,c);
-		 winnerPanel.setBackground(MyColors.beechyBlue);
-		 winnerPanel.setBorder(new LineBorder(MyColors.gold,4));
+		 c.gridy = k+2;
+		
+		
 		 c.gridy = 1;
-		 mainPanel.add(winnerPanel,c);
+		 mainPanel.add(recountPanel,c);
+		 mainPanel.add(finish,v);
+		 mainPanel.setBackground(MyColors.beechyBlue);
+		 mainPanel.setBorder(new LineBorder(MyColors.gold,4));
 		 
 		 /**Sets Defaults for main Panel**/ 
 		 this.getContentPane().add(mainPanel);
 		 this.getRootPane().setDefaultButton(finish);
 		 this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);  
          this.setIconImage(MyImages.codeFather.getImage());
-         this.setTitle("Winners!");
-         this.setSize(430, 270);
+         this.setTitle("Recount Results");
+         this.setSize(600, 400);
          
          /**Centers GUI onto Screen**/
          Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -100,6 +115,7 @@ public class DisplayGUI extends JFrame implements ActionListener{
          int y = (int) ((d.getHeight() - this.getHeight()) / 2);
          setLocation(x, y);
          this.setVisible(true);  
+	        
 	        
 	}
 	 public void actionPerformed(ActionEvent e) {
@@ -114,15 +130,16 @@ public class DisplayGUI extends JFrame implements ActionListener{
 	 * @throws ClassNotFoundException
 	 * Retrieves array race Panels from Server
 	 */
-	public HashMap<String, List<Candidate>> getWinners() {
-		HashMap<String, List<Candidate>> winners = null;
+	public HashMap<String, List<Candidate>> getRecountDetails() {
+		HashMap<String, List<Candidate>> candidatesRecount = null;
 		try {
-			pwOut.writeObject("<getVotes>");
-			 winners = (HashMap<String, List<Candidate>>)brIn.readObject();
+			pwOut.writeObject("<getRecount>");
+			candidatesRecount = (HashMap<String, List<Candidate>>)brIn.readObject();		
+			
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return winners;
+		return candidatesRecount;
 	 }
 	 
 	 /**Starts Server Components**/
@@ -143,7 +160,7 @@ public class DisplayGUI extends JFrame implements ActionListener{
 		 server.start();
 		 server.restore();
 		 
-		 new DisplayGUI();
+		 new RecountGUI();
 	 }
 
 	
