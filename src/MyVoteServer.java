@@ -16,6 +16,7 @@ public class MyVoteServer extends Thread  {
 	
 	static HashMap<String, Election> elections;
 	static Election election;
+	static Candidate candiate;
 	static HashMap<String, User> users;
 	String selectedE;
 
@@ -33,6 +34,7 @@ public class MyVoteServer extends Thread  {
 		 if(runDeserialize)
 		 API.deserializeAPI();
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Thread#run()
@@ -68,6 +70,7 @@ public class MyVoteServer extends Thread  {
 	}
 	
 	public boolean voted(String username){
+		System.out.println("enter: " + election.votedUsers.containsKey(username));
 		return election.votedUsers.containsKey(username);
 	}
 	
@@ -89,21 +92,21 @@ public class MyVoteServer extends Thread  {
 	}
 	public void addElection( Election e){
 		elections.put(e.election_title, e);
+		System.out.println(elections);
 		backup();
 	}
 	public boolean electionUp(){
 		return !elections.isEmpty();
 	}
 	public void updateSummaryStatistics(String data){
-
-		if(election.summaryStatistcs != null && election.summaryStatistcs.containsKey(data)){
-			System.out.println("if summary statistics");
+		System.out.println(data);
+		System.out.println(election.summaryStatistcs.get(data));
+		
+		if(election.summaryStatistcs.containsKey(data)){
 			int value = election.summaryStatistcs.get(data.trim()).intValue();
 			election.summaryStatistcs.put(data.trim(), value+1);
+			System.out.println(election.summaryStatistcs);
 		}
-		else election.summaryStatistcs.put(data, 1);
-		backup();
-	
 	}
 	public HashMap<String, Integer> getStatistics(){
 		return election.summaryStatistcs;
@@ -134,18 +137,50 @@ public class MyVoteServer extends Thread  {
 		
 		election.votes.get(race.trim()).get(selected).incramentTally();
 		election.votedUsers.put(votedUser, users.get(votedUser));
-		System.out.println(election.votedUsers);
 		backup();
 	}
 	
 	/** @return users in api**/
 	public User[] getVotedUsers(){
 		return  election.votedUsers.values().toArray(new User[0]);
-		
 	}
 	
 	public HashMap<String, List<Candidate>> getVotes(){
 		return election.votes;
+	}
+	public HashMap<String, List<Candidate>> getRecount(){
+		
+		return election.votes;
+		
+	}
+	public String getTally(String userName,String raceName,String candidateName){
+		int tally =0;
+		HashMap<String, List<Candidate>> votes = election.votes;
+		HashMap<String, User> usersVoted = election.votedUsers;
+		String[] userData =  usersVoted.keySet().toArray(new String[0]);
+		List<Candidate>[] candidates = votes.values().toArray(new List[0]);
+		String[] race = votes.keySet().toArray(new String[0]);
+		for(int i = 0; i< race.length ;i++){
+			if(race[i].equalsIgnoreCase(raceName))
+			{
+				for(int j=0;j<candidates[i].size();j++){
+					if(candidates[i].get(j).getName().equalsIgnoreCase(candidateName) ){
+							candidates[i].get(j).decrementTally();
+							tally = candidates[i].get(j).getTally();
+							usersVoted.remove(userName);
+					}
+				}
+				
+			}
+		}
+		
+		
+		
+		if(tally!=0)
+			return "Disqualified";
+		else return "Not Disqualified. Please check the values.";
+		
+		
 	}
 	
 	/**
@@ -157,6 +192,7 @@ public class MyVoteServer extends Thread  {
 		try{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
 			apiOut.writeObject(elections);
+			//apiOut.writeObject(election.votes);
 			apiOut.close();
 			System.out.println("Backup Complete!");
 
@@ -176,6 +212,7 @@ public class MyVoteServer extends Thread  {
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("BackupAPI.ser"));
 			elections = (HashMap<String, Election>) apiIn.readObject();
+			//election.votes = (HashMap<String, List<Candidate>>) apiIn.readObject();
 			System.out.println("Restoration Complete!");
 			System.out.println(elections);
 			apiIn.close();
@@ -188,6 +225,11 @@ public class MyVoteServer extends Thread  {
 		}
 	}
 	
+	public static void resetElection(){
+		new MyVoteServer(true).start();
+		backup();
+	}
+	
 	/**Kills the server on exit**/
 	public void die(){
 		try{
@@ -197,15 +239,12 @@ public class MyVoteServer extends Thread  {
 		}
 		System.exit(0);
 	}
-	
-	public static void resetElection(){
-		new MyVoteServer(true).start();
-		backup();
-	}
 
 	public static void main(String[]args){
+		new MyVoteServer(true).start();
 		resetElection();
 		restore();
+		
 	}
 	
 	
