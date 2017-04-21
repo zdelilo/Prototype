@@ -138,7 +138,7 @@ public class DisplayGUI extends JFrame implements ActionListener{
 	 }
 	 
 	 public static void main(String[]args){
-		 MyVoteServer server = new MyVoteServer();
+		 MyVoteServer server = new MyVoteServer(true);
 		 server.start();
 		 server.restore();
 		 

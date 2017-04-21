@@ -73,7 +73,6 @@ public class ElectionInterface extends JFrame implements ActionListener{
 		}
 		addConfirm();
 		
-		System.out.println("enter e interface");
 		/**Default values for Main Panel | Color | Size | Icon | Title | **/
         panelMain.setBackground(MyColors.deepBlue);
         this.setSize(400,200);

@@ -26,9 +26,11 @@ public class MyVoteServer extends Thread  {
 	 * MyVoteServer Constructor
 	 * Deserializes API file to initialize the users hashmap
 	 */
-	MyVoteServer(){
+	MyVoteServer(boolean runDeserialize){
 		 users = new HashMap<String,User>();
 		 elections = new  HashMap<String, Election>();
+		 
+		 if(runDeserialize)
 		 API.deserializeAPI();
 	}
 	
@@ -66,7 +68,6 @@ public class MyVoteServer extends Thread  {
 	}
 	
 	public boolean voted(String username){
-		System.out.println("enter: " + election.votedUsers.containsKey(username));
 		return election.votedUsers.containsKey(username);
 	}
 	
@@ -88,21 +89,21 @@ public class MyVoteServer extends Thread  {
 	}
 	public void addElection( Election e){
 		elections.put(e.election_title, e);
-		System.out.println(elections);
 		backup();
 	}
 	public boolean electionUp(){
 		return !elections.isEmpty();
 	}
 	public void updateSummaryStatistics(String data){
-		System.out.println(data);
-		System.out.println(election.summaryStatistcs.get(data));
-		
-		if(election.summaryStatistcs.containsKey(data)){
+
+		if(election.summaryStatistcs != null && election.summaryStatistcs.containsKey(data)){
+			System.out.println("if summary statistics");
 			int value = election.summaryStatistcs.get(data.trim()).intValue();
 			election.summaryStatistcs.put(data.trim(), value+1);
-			System.out.println(election.summaryStatistcs);
 		}
+		else election.summaryStatistcs.put(data, 1);
+		backup();
+	
 	}
 	public HashMap<String, Integer> getStatistics(){
 		return election.summaryStatistcs;
@@ -133,12 +134,14 @@ public class MyVoteServer extends Thread  {
 		
 		election.votes.get(race.trim()).get(selected).incramentTally();
 		election.votedUsers.put(votedUser, users.get(votedUser));
+		System.out.println(election.votedUsers);
 		backup();
 	}
 	
 	/** @return users in api**/
 	public User[] getVotedUsers(){
 		return  election.votedUsers.values().toArray(new User[0]);
+		
 	}
 	
 	public HashMap<String, List<Candidate>> getVotes(){
@@ -154,7 +157,6 @@ public class MyVoteServer extends Thread  {
 		try{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
 			apiOut.writeObject(elections);
-			//apiOut.writeObject(election.votes);
 			apiOut.close();
 			System.out.println("Backup Complete!");
 
@@ -174,7 +176,6 @@ public class MyVoteServer extends Thread  {
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("BackupAPI.ser"));
 			elections = (HashMap<String, Election>) apiIn.readObject();
-			//election.votes = (HashMap<String, List<Candidate>>) apiIn.readObject();
 			System.out.println("Restoration Complete!");
 			System.out.println(elections);
 			apiIn.close();
@@ -198,12 +199,12 @@ public class MyVoteServer extends Thread  {
 	}
 	
 	public static void resetElection(){
-		new MyVoteServer().start();
+		new MyVoteServer(true).start();
 		backup();
 	}
 
 	public static void main(String[]args){
-		//resetElection();
+		resetElection();
 		restore();
 	}
 	

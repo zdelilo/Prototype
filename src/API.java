@@ -41,12 +41,6 @@ public class API {
 				MyVoteServer.users.put(user[1], new HSO(user[1], user[2],user[3],user[4],user[5],user[6]));
 		}
 		
-		apiReader = new Scanner(new File("summaryStats.txt"));
-		while(apiReader.hasNext()){
-			String input = apiReader.next();
-			Election.summaryStatistcs.put(input, 0);
-		}
-		
 		}catch(IOException e){
 			System.out.println("API not present...");
 		}
@@ -64,14 +58,12 @@ public class API {
 			
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("MyVoteAPI.ser"));
 			apiOut.writeObject(MyVoteServer.users);
-			apiOut.writeObject(MyVoteServer.election.summaryStatistcs);
 			apiOut.close();
 			System.out.println("Serialization Complete!");
 
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		
 	}
 	
 	/**
@@ -89,8 +81,7 @@ public class API {
 			
 			ObjectInputStream apiIn = new ObjectInputStream(new FileInputStream("MyVoteAPI.ser"));
 			MyVoteServer.users = (HashMap<String,User>) apiIn.readObject();
-			Election.summaryStatistcs = (HashMap<String,Integer>) apiIn.readObject();
-			//System.out.println(Election.summaryStatistcs);
+			
 			System.out.println("Deserialization Complete!");
 			apiIn.close();
 			
@@ -104,7 +95,7 @@ public class API {
 		
 	}
 	public static void main (String[]args){
-		new MyVoteServer().start();
+		new MyVoteServer(false).start();
 		new API();
 		serializeAPI();
 	}
