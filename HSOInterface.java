@@ -2,11 +2,23 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Writer;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.awt.*;
 import javax.swing.*;
-
+import java.util.Random;
 
 public class HSOInterface extends JFrame implements ActionListener{
 
@@ -15,48 +27,80 @@ public class HSOInterface extends JFrame implements ActionListener{
 	ArrayList<String> contents = new ArrayList<String>();
 	DefaultListModel model = new DefaultListModel();
 	JList list = new JList(model);
+	DefaultListCellRenderer renderer = (DefaultListCellRenderer)list.getCellRenderer();
+	
+	
+	ArrayList<String> comm = new ArrayList<String>();
 
 	JPanel panelMain = new JPanel();
 	GroupLayout layout = new GroupLayout(panelMain);
 	JPanel pnlRadios = new JPanel();
 	JPanel pnlList = new JPanel();
-	JLabel lWelcome = new JLabel("Welcome HSO, ");// + HSO.users;
-	Election election;
+	
+	String u;
+	JLabel lWelcome;
+
+	ElectionPrompt election;
 	JLabel lCurrentElections; 
 	ArrayList<String> commissioner = new ArrayList<String>(); 
-	
-	HSOInterface(){
-		lCurrentElections = new JLabel("Or choose a current election");
+	JButton finish; 
 
+	Election[] elections;
+	Election[] commissioners;
+	/**Server Stuff**/
+	ObjectInputStream brIn;
+	ObjectOutputStream pwOut;	
+	Socket sock;
+
+
+	HSOInterface() throws IOException{
+		startServer();
+		lCurrentElections = new JLabel("Or choose a current election");
+		
+		renderer.setHorizontalAlignment(JLabel.CENTER);
+		
+		String line = null;
+		try{
+			File file = new File("API.txt");
+
+			String users[]; 
+
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			while((line = br.readLine()) != null){
+				users = line.split(" ");
+				if(users[0].equals("HSO")){
+					u = users[1];
+				}
+
+			}
+		} catch(FileNotFoundException e){
+			e.printStackTrace();
+		}
+
+
+		lWelcome = new JLabel("Welcome HSO: " + u + "!");
+		lWelcome.setForeground(Color.WHITE);
+		
+		
+		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
 		pnlList.add(lCurrentElections);
+		pnlList.add(Box.createVerticalStrut(20));
 		pnlList.add(list);
 		pnlList.setAutoscrolls(true);
 
+		finish = new JButton("Finish");
+		finish.setActionCommand("finish");
+		finish.addActionListener(this);
 
 		pnlList.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
 		JRadioButton radNewElection = new JRadioButton("Create New Election");
-		JRadioButton radRecount = new JRadioButton("Recount Results");
-		JRadioButton radDisqualify = new JRadioButton("Disqualify Voter");
-		JRadioButton radCertify = new JRadioButton("Certify Election");
-
 
 		radNewElection.setActionCommand("NewElection");
 		radNewElection.addActionListener(this);
 
-		radRecount.setActionCommand("Recount");
-		radRecount.addActionListener(this);
-
-		radDisqualify.setActionCommand("Disqualify");
-		radDisqualify.addActionListener(this);
-
-		radCertify.setActionCommand("Certify");
-		radCertify.addActionListener(this);
-
 		pnlRadios.add(radNewElection);
-		pnlRadios.add(radDisqualify);
-		pnlRadios.add(radRecount);
-		pnlRadios.add(radCertify);
+
 		pnlRadios.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -65,7 +109,7 @@ public class HSOInterface extends JFrame implements ActionListener{
 		pnlRadios.setLayout(new BoxLayout(pnlRadios, BoxLayout.Y_AXIS));
 
 		panelMain.setBackground(MyColors.deepBlue);
-		this.setSize(400,600);
+		this.setSize(450,600);
 		this.setIconImage(MyImages.codeFather.getImage());
 		this.setTitle("HSO Interface");
 		this.getContentPane().add(panelMain);
@@ -73,12 +117,19 @@ public class HSOInterface extends JFrame implements ActionListener{
 
 		panelMain.setLayout(layout);
 
+
+		getList();
+		initializeList();
+
 		layout.setHorizontalGroup(layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(lWelcome))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(pnlRadios)
-						.addComponent(pnlList))
+				//.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(pnlList)
+						.addComponent(finish))
+
 				);
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -87,9 +138,10 @@ public class HSOInterface extends JFrame implements ActionListener{
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(pnlRadios)).addGap(50)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(pnlList)
+						.addComponent(pnlList)).addGap(50)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(finish)
 						));
-
 
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
@@ -103,14 +155,19 @@ public class HSOInterface extends JFrame implements ActionListener{
 
 		/**Retrieves Election Name and adds to current Election List**/
 		contents.add(name);
+		//comm.add(contents.indexOf(name), id);
+
 		model.addElement(contents.get(contents.size()-1));
 
 		layout.setHorizontalGroup(layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(lWelcome))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(pnlRadios)
-						.addComponent(pnlList))
+				//.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(pnlList)
+						.addComponent(finish))
+
 				);
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
@@ -119,7 +176,9 @@ public class HSOInterface extends JFrame implements ActionListener{
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(pnlRadios)).addGap(50)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(pnlList))
+						.addComponent(pnlList)).addGap(50)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(finish))
 				);
 
 		panelMain.setBackground(MyColors.deepBlue);
@@ -136,43 +195,155 @@ public class HSOInterface extends JFrame implements ActionListener{
 		int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
 		setLocation(x, y);
 		setVisible(true);
-	}
 
-	public void addCommissioner(String id){
-		commissioner.add(id);
 	}
 
 	public void actionPerformed(ActionEvent e){
 		if(e.getActionCommand().equals("NewElection")){
 
 			/**Have election take in current election**/
-			new Election(this);
+			new ElectionPrompt(this);
 
 			setVisible(false);
 		}
 		if(list.getSelectedValue() != null){
-			if(e.getActionCommand().equals("Recount")){
-				new CurrentElection(this);
-			}
-			else if(e.getActionCommand().equals("Certify")){
+			String selectedE = list.getSelectedValue().toString();
+			
+			initializeElection(selectedE);
+			new CurrentElection(this);
+			this.setVisible(false);
+		}
 
-			}
-			else if(e.getActionCommand().equals("Disqualify")){
+		if(e.getActionCommand().equals("finish"))
+			this.setVisible(false);
+	}
 
-			}
 
+	public void getList(){
+		try {
+			pwOut.writeObject("<getElections>");
+			elections = (Election[])brIn.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+
+			e.printStackTrace();
 		}
 	}
+
+	public void initializeList(){
+		for(Election e: elections)
+			this.addList(e.election_title);
+	}
+
+	public void initializeElection(String selectedE){
+		try {
+			pwOut.writeObject("<selectedElection>");
+			pwOut.writeObject(selectedE);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+	}
+	public void addCommissioner(String id, String eTitle){
+		char alphabet[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+		String random = new String();
+		int num = 0; 
+		Random r = new Random();
+
+
+		BufferedWriter bw = null;
+		FileWriter fw = null;
+
+		try{
+			File file = new File("C:\\Users\\Catherine\\workspace5\\Prototype\\API.txt");
+
+			fw = new FileWriter(file.getAbsoluteFile(), true);
+			bw = new BufferedWriter(fw);
+			
+			//writes to API as EC username password ElectionName
+			for(int i = 0; i < 10; ++i){
+				num = r.nextInt(alphabet.length);
+				
+				random += alphabet[num]; 
+			}
+		
+			bw.write("\nEC " + id + " " + random + " " + eTitle);
+			bw.flush();
+		} catch(IOException e){
+			e.printStackTrace();
+
+		} finally{
+			try{
+				if(bw != null)
+					bw.close();
+				if(fw != null)
+					fw.close();
+			}catch(IOException e2){
+				e2.printStackTrace();
+			}
+		}
+		//commissioner.add(id);
+	}
+
 
 	public String getElection(){
 		return list.getSelectedValue().toString();	
 	}
-	
-	public String getCommissioner(){
-		return commissioner.get(list.getSelectedIndex());	
+
+		public String getCommissioner(){
+			String line = null;
+			try{
+				File file = new File("API.txt");
+
+				String users[]; 
+
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				while((line = br.readLine()) != null){
+					users = line.split(" ");
+					if(users[3].equals(list.getSelectedValue())){
+						u = users[1];
+					}
+
+				}
+			} catch(IOException e){
+				e.printStackTrace();
+			}
+			
+			return u;
+			//int indexes[] = list.getSelectedIndices();
+		//return commissioner.get(list.getSelectedIndex());	
 	}
-	
-	public static void main(String args[]){
-		new HSOInterface();
+
+
+	public void shutdown(){
+		try {
+			pwOut.writeObject("<shutdown>");
+			this.setVisible(false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void startServer(){
+		/**Initialzies Server**/
+		try {
+			sock = new Socket("127.0.0.1",50000);
+			pwOut = new ObjectOutputStream(sock.getOutputStream());
+			brIn = new ObjectInputStream(sock.getInputStream());    	
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	public static void main(String args[])
+	{
+		try {
+			new HSOInterface();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
 	}
 }
