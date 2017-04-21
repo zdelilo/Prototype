@@ -79,21 +79,42 @@ public class MyVoteServer extends Thread  {
 		return users.get(username.trim());
 	}
 	
+	/**@return an array of the elections*/
 	public Election[] getElections(){
 		return elections.values().toArray(new Election[0]);
 	}
+	
+	/**
+	 * Takes in the name of an election assigns the attribute election
+	 * to the selected election
+	 * @param selected - Name of the election to select
+	 * @return the election selected
+	 */
 	public String selectedElection(String selected){
 		selectedE = selected;
 		election = elections.get(selectedE);
 		return selectedE;
 	}
+	/**
+	 * Takes in an eleciton and adds it to the server
+	 * 		|backs up the election after it is added
+	 * @param e - the election to be added to the server
+	 */
 	public void addElection( Election e){
 		elections.put(e.election_title, e);
 		backup();
 	}
+	
+	/** @return boolean | true election is up | false no elections up | */
 	public boolean electionUp(){
 		return !elections.isEmpty();
 	}
+	
+	/**
+	 * Takes in the statitic (ie gender, college, etc...) 
+	 * 		| increments the statistic for the election
+	 * @param data - statistic to be incremented
+	 */
 	public void updateSummaryStatistics(String data){
 
 		if(election.summaryStatistcs != null && election.summaryStatistcs.containsKey(data)){
@@ -105,9 +126,13 @@ public class MyVoteServer extends Thread  {
 		backup();
 	
 	}
-	public HashMap<String, Integer> getStatistics(){
+	
+	/**@return hashmap containing the summary statisitcs */
+	public HashMap<String, Integer> getStatistics()
+	{
 		return election.summaryStatistcs;
 	}
+	
 	/**
 	 * @param race
 	 * @param candidates
@@ -131,10 +156,11 @@ public class MyVoteServer extends Thread  {
 	 * NOTE >>> Backs up server with each vote (testing purposes)
 	 **/
 	public void addVote(String race, int selected, String votedUser){
-		
+		System.out.println("vote server");
 		election.votes.get(race.trim()).get(selected).incramentTally();
 		election.votedUsers.put(votedUser, users.get(votedUser));
 		System.out.println(election.votedUsers);
+		System.out.println(election.votes);
 		backup();
 	}
 	
@@ -146,6 +172,40 @@ public class MyVoteServer extends Thread  {
 	
 	public HashMap<String, List<Candidate>> getVotes(){
 		return election.votes;
+	}
+	public HashMap<String, List<Candidate>> getRecount(){
+		return election.votes;
+		
+	}
+	
+	/**
+	 * Takes in information rewuired to disqualify a user and removes the user information
+	 * and decrements the tally of the voted candidate
+	 * 					|User - user's summary statistidcs must be removed from the summaryStastics
+	 * @param userName 		- User whose statistics need to be removed
+	 * @param raceName 		- name of the race used to access the candidate
+	 * @param candidateName - name of the candidate who's tally must be decremented
+	 * @return
+	 */
+	public String getTally(String userName,String raceName,String candidateName){
+
+		List<Candidate>candidates = election.votes.get(raceName);
+		int beforeTally = 0;
+		int afterTally = 0;
+		
+		if(Candidate.contains(candidates, candidateName))
+		{	
+			beforeTally = Candidate.getCandidate(candidates, candidateName).getTally();
+			Candidate.getCandidate(candidates, candidateName).decrementTally();
+			afterTally = Candidate.getCandidate(candidates, candidateName).getTally();
+		}
+		if((beforeTally - afterTally) >0){
+			backup();
+			return "Disqualified";
+		}
+		else return "Not Disqualified. Please check the values.";
+		
+		
 	}
 	
 	/**

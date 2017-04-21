@@ -44,6 +44,7 @@ public class MyVoteHandler extends Thread {
 			break;
 			
 			case "<vote>":
+				System.out.println("vote handler");
 				String race = (String)brIn.readObject();
 				int selected = (int)brIn.readObject();
 				String votedUser = (String)brIn.readObject();
@@ -61,9 +62,21 @@ public class MyVoteHandler extends Thread {
 			
 			case "<getVotes>":
 				pwOut.writeObject(server.getVotes());
+				pwOut.writeObject(server.getRecount());
+			break;
+			
+			case "<getRecount>":
+				pwOut.writeObject(server.getRecount());
+				break;
+				
+			case "<disqualify>":
+				pwOut.writeObject(server.getTally(myVoteCommands[1],myVoteCommands[2],myVoteCommands[3]));
+			break;
+			
 			case "<certify>":
 				pwOut.writeObject(server.getVotedUsers());
 			break;
+			
 			case"<electionUp>":
 				pwOut.writeObject(server.electionUp());
 			break;
