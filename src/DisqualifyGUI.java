@@ -24,9 +24,7 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
-	JTextField txtUser;
-	JTextField txtRaceName;
-	JTextField txtCandidateName;
+	JTextField txtID;
 	
 	JLabel vName;
 		
@@ -36,21 +34,18 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
 	JPanel buttons = new JPanel();
 	GroupLayout layout = new GroupLayout(panelMain);
 		
-	txtUser = new JTextField(20);
-	txtRaceName = new JTextField(16);	
-	txtCandidateName = new JTextField(30);
+	txtID = new JTextField(20);
 	
-	JLabel lName = new JLabel("User Name");
+	JLabel lName = new JLabel("ID Name");
 	lName.setFont(new Font(lName.getFont().getName(), Font.BOLD, 15));
 	vName = new JLabel("Please enter the details");
 	vName.setForeground(Color.RED);
 	vName.setVisible(false);
 	vName.setFont(new Font(vName.getFont().getName(), Font.BOLD, 15));
 	
-	JLabel lCreditCardNumber = new JLabel("Race Name");
-	lCreditCardNumber.setFont(new Font(lCreditCardNumber.getFont().getName(), Font.BOLD, 15));
-	JLabel lEmail = new JLabel("Candidate Name");
-	lEmail.setFont(new Font(lEmail.getFont().getName(), Font.BOLD, 15));	
+	JLabel disqualifyOptioins = new JLabel("Disqualify Optiosn");
+	disqualifyOptioins.setFont(new Font(disqualifyOptioins.getFont().getName(), Font.BOLD, 15));
+
 	
 	JButton btnDisqualify = new JButton("Disqualify");
 	btnDisqualify.setActionCommand("disqualify");
@@ -78,11 +73,8 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 	.addComponent(vName)
                 	.addComponent(lName)
-                    .addComponent(txtUser)                    
-                    .addComponent(lCreditCardNumber)
-                    .addComponent(txtRaceName)
-                    .addComponent(lEmail)
-                    .addComponent(txtCandidateName)
+                    .addComponent(txtID)                    
+                    .addComponent(disqualifyOptioins)
                     .addComponent(buttons))
                     );
         layout.setVerticalGroup(
@@ -90,11 +82,8 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
                 .addGroup(layout.createSequentialGroup()
                 	.addComponent(vName)
                 	.addComponent(lName)
-                    .addComponent(txtUser)                    
-                    .addComponent(lCreditCardNumber)
-                    .addComponent(txtRaceName)
-                    .addComponent(lEmail)
-                    .addComponent(txtCandidateName)
+                    .addComponent(txtID)                    
+                    .addComponent(disqualifyOptioins)
                     .addComponent(buttons))
         );
         
@@ -137,10 +126,8 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
 	    	}
 	    	else if(e.getActionCommand().equals("disqualify"))
 	    	{
-	    		 if(txtUser.getText().isEmpty() || txtRaceName.getText().isEmpty() || txtCandidateName.getText().isEmpty())
-	    		   {
+	    		 if(txtID.getText().isEmpty())
 	        		vName.setVisible(true);
-	        	   }
 	    		 
 	    		 else
 	        	   {
@@ -150,16 +137,13 @@ public class DisqualifyGUI extends JFrame implements ActionListener{
 	        	   }
 	    	}
 		} 
-	 /**
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 * Retrieves array race Panels from Server
-	 */
+
 	public String disqualifyVoter() 
 	{
 		try 
 		{
-		pwOut.writeObject("<disqualify>"+ " " + txtUser.getText()+ " " + txtRaceName.getText() +" "+ txtCandidateName.getText());
+		pwOut.writeObject("<disqualify>");
+		pwOut.writeObject( txtID.getText());
 		return  (String)brIn.readObject();		
 			
 		} catch (IOException | ClassNotFoundException e) {

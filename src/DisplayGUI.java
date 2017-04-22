@@ -24,6 +24,7 @@ import javax.swing.border.LineBorder;
 
 public class DisplayGUI extends JFrame implements ActionListener{
 
+	private static final long serialVersionUID = 1L;
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
@@ -35,13 +36,13 @@ public class DisplayGUI extends JFrame implements ActionListener{
 		
 		 HashMap<String, List<Candidate>> map =  getWinners();
 		 String[] races = map.keySet().toArray(new String[0]);
+		 @SuppressWarnings("unchecked")
 		 List<Candidate>[] winners = map.values().toArray(new List[0]);
 		 
 		 JPanel mainPanel = new JPanel(new GridBagLayout());	
 		 mainPanel.setBackground(Color.white);
 		 JPanel winnerPanel = new JPanel(new GridBagLayout());
 		 JPanel raceP = new JPanel();
-		 JPanel winnerP = new JPanel();
 		 raceP.setBackground(MyColors.paleTurquoise);
 		 GridBagConstraints c = new GridBagConstraints();
 		 

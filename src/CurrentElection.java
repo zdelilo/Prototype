@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 public class CurrentElection extends JFrame implements ActionListener{
 
+	private static final long serialVersionUID = 1L;
 	JLabel lblElectionName;
 	JLabel lblCommissionerID;
 	JLabel lblCandidates;
@@ -18,8 +19,6 @@ public class CurrentElection extends JFrame implements ActionListener{
 		JPanel panelMain = new JPanel();
 		GroupLayout layout = new GroupLayout(panelMain);
 		JPanel panelElection = new JPanel();
-		JPanel panelCommissioner = new JPanel();
-		JPanel panelCandidates = new JPanel();
 		
 		//lblElectionName = new JLabel("Election Name:  " + election.getElection());
 		
@@ -60,10 +59,7 @@ public class CurrentElection extends JFrame implements ActionListener{
         this.setVisible(true); 
 	}
 	
-	
-	
-	
-	
+
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("exit"))
 			this.setVisible(false);

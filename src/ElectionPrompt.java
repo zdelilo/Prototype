@@ -7,8 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 public class ElectionPrompt extends JFrame implements ActionListener{
-	
-	 /**Server Stuff**/
+
+	private static final long serialVersionUID = 1L;
+	/**Server Stuff**/
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
@@ -88,8 +89,6 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 		if(e.getActionCommand().equals("confirm")){
 			
 			String electionName = txtElectionName.getText();
-			String commissionerID = txtCommissionerID.getText();
-			
 			election.addList(electionName);
 			eInterface.addElection(electionName);
 			this.setVisible(false);

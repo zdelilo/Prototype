@@ -30,6 +30,7 @@ public class MyVoteHandler extends Thread {
 			myVoteStream = (String) brIn.readObject();
 			String[] myVoteCommands = myVoteStream.split(" ");
 			System.out.println(myVoteCommands[0]);
+			
 			switch(myVoteCommands[0]){
 			
 			case "<login>":
@@ -44,11 +45,11 @@ public class MyVoteHandler extends Thread {
 			break;
 			
 			case "<vote>":
-				System.out.println("vote handler");
 				String race = (String)brIn.readObject();
 				int selected = (int)brIn.readObject();
 				String votedUser = (String)brIn.readObject();
-				server.addVote(race, selected, votedUser);
+				String ID = (String)brIn.readObject();
+				server.addVote(race, selected, votedUser, ID);
 			break;			
 			
 			case "<addRace>":
@@ -70,7 +71,8 @@ public class MyVoteHandler extends Thread {
 				break;
 				
 			case "<disqualify>":
-				pwOut.writeObject(server.removeVote(myVoteCommands[1],myVoteCommands[2],myVoteCommands[3]));
+				ID = (String)brIn.readObject();
+				pwOut.writeObject(server.removeVote(ID));
 				
 			break;
 			

@@ -1,4 +1,4 @@
-import java.awt.Color;
+import java.awt.Color; 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -10,12 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,7 +19,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
 public class CertifyResultsGUI extends JFrame implements ActionListener {
-	
+
 	User[] users;
 	HashMap<String, Integer> summary;
 	ObjectInputStream brIn;
@@ -57,8 +52,6 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 	   	{
 	   		c.gridy = i;
 	   		
-	   		 String[] data = users[i].toString().split(" ");
-
 	   		 userP.add(new JLabel(users[i].toString()));
 	   		 userP.setBackground(MyColors.kaki);
 	   		 userP.setBorder(new LineBorder(Color.black,4));
@@ -106,8 +99,13 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 				e.printStackTrace();
 			}
 	 }
-
-	/**<<SERVER CONNECTION>>
+	 public void actionPerformed(ActionEvent e) 
+		{	
+			if(e.getActionCommand().equals("certify"))	
+				{	this.setVisible(false);	}
+		}
+	 
+	/**<<SERVER CONNECTION>> <certify>
 	 * Retrieves and initializes array of users from server**/
 	public void certify()
 	{
@@ -118,13 +116,9 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 		} 
 		catch (IOException | ClassNotFoundException e) {	e.printStackTrace();	}
 	}
-	
-	public void actionPerformed(ActionEvent e) 
-	{	
-		if(e.getActionCommand().equals("certify"))	
-			{	this.setVisible(false);	}
-	}
-	
+	/**<<SERVER CONNECTION>> <getStatistics>
+	 * Initialises a summary of the statistis | hashmap: Statistic -> data | */
+	@SuppressWarnings("unchecked")
 	public void getSummary()
 	{
 		try 
@@ -135,6 +129,11 @@ public class CertifyResultsGUI extends JFrame implements ActionListener {
 		catch (IOException | ClassNotFoundException e) {	e.printStackTrace();	}
 	}
 	
+	/**
+	 * Creates a string representation for the summary statistics
+	 * @param s | hashmap of summary statistics |
+	 * @return
+	 */
 	public String createSummary(HashMap<String, Integer> s)
 	{
 		String[] keys = s.keySet().toArray(new String[0]);

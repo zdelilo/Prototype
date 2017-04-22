@@ -5,14 +5,15 @@ import java.util.List;
 public class Candidate implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	public String name;
+	public String race;
     private int tally;
 	
-	Candidate(String name) {
+	Candidate(String name, String race) {
 		this.name = name;
+		this.race = race;
 		tally = 0;
 	}
 	
-	/** Increments current tally for candidate */
 	public void incramentTally(){
 		tally++;
 	}
@@ -50,16 +51,16 @@ public class Candidate implements java.io.Serializable {
 	
 	/**
 	 * Helper method for retrieving candidates from a list of candidates
-	 * 
-	 * @param candidates - list of candidates to be searched
-	 * @param search	 - search key (name of candidate{
+	 * @param candidates | list of candidates to be searched |
+	 * @param search	 | search key (name of candidate)    |
 	 * @return*/
 	public static Candidate getCandidate(List<Candidate> candidates, String search){
 		Candidate result = null;
 		
 		for(Candidate name : candidates)
 		{
-			if(name.name.trim().equals(search))
+			System.out.println(name.name.trim() + " " + search.trim());
+			if(name.name.trim().equals(search.trim()))
 				result = name;
 		}
 		return result;
@@ -68,22 +69,24 @@ public class Candidate implements java.io.Serializable {
 	/**
 	 * Helper method which takes in a list of candidates and determines 
 	 * if a candidate is present
-
-	 * @param candidates - list of candidates to be searched
-	 * @param search	 - search key (name of candidate
+	 * @param candidates | list of candidates to be searched |
+	 * @param search	 | search key (name of candidate     |
 	 * @return*/
 	public static boolean contains(List<Candidate> candidates, String search){
 		boolean result = false;
 		for(Candidate name : candidates)
 		{
-			if(name.name.trim().equals(search)){
+			if(name.name.trim().equals(search.trim())){
 				result =  true;
 			}
 		}
 		return result;
 	}
 	
-	/**Creates and returns a hashmap containing all of the candidates tallies**/
+	/**Creates and returns a hashmap containing all of the candidates tallies
+	 * @param candidates | list of candidates to be recounted |
+	 * @return hashmap containing a candidate -> tally recount
+	 */
 	public static HashMap<String,Integer> RecountResults(List<Candidate> candidates){
 		HashMap<String,Integer> recountResults = new HashMap<String,Integer>();
 		
@@ -94,12 +97,16 @@ public class Candidate implements java.io.Serializable {
 		return recountResults;
 	}
 	
-	/**Creastes an array list of candidates given string of names**/
-	public static List<Candidate> createCandidates( String[] a) {
+	/**Creastes an array list of candidates given string of names
+	 * @param candidates | array of candidate names |
+	 * @param race		 | name of the race         |
+	 * @return
+	 */
+	public static List<Candidate> createCandidates( String[] candidates, String race) {
 		ArrayList<Candidate> c = new ArrayList<Candidate>();
 		
-		for(String name: a)
-			c.add(new Candidate(name));
+		for(String name: candidates)
+			c.add(new Candidate(name,race));
 		
 		return c;
 	}

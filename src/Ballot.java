@@ -1,4 +1,4 @@
-import java.awt.Color;      
+import java.awt.Color;       
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -8,13 +8,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.UUID;
+
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
@@ -156,32 +157,26 @@ public class Ballot extends JFrame implements ActionListener{
 	    	if(e.getActionCommand().equals("confirm"))
 	    		
 	    	{
-	    		
+	    		String  ID = (UUID.randomUUID().toString().substring(0,7));
+	    		JFrame frame = new JFrame();
+	    		JOptionPane.showMessageDialog(frame, "Voter ID: "+ ID,"Very important voter certificate ID... Thing...",
+	    									JOptionPane.PLAIN_MESSAGE,MyImages.codeFather);
 		    	for(int i = 0; i < panels.size();i++){
 		    		
 		    		String race = panels.get(i).race_title;
 		    		String selectedC = selectedCandidates.get(i).getSelection().getActionCommand();
 		    		int selectedIndex = panels.get(i).names.indexOf(selectedC);
-		   	 	    addVotes(race, selectedIndex);
+		   	 	    addVotes(race, selectedIndex, ID);
 		    		System.out.println(race + " " + selectedC);
 		    	}
 
 		    	updateSummaryStatistics(user);
 	    	}
 	    }
-	    public void updateSummaryStatistics(User user)
-		{
-	    	for(String d: user.dataSet())
-			{
-				try 
-				{
-					pwOut.writeObject("<updateSummary>");
-					pwOut.writeObject(d);
-				} 	
-				catch (IOException e) {	e.printStackTrace();	}
-			}
-		}
-	   public void startServer(){
+	    
+	   /**Initializes server components*/
+	    public void startServer()
+	    {
 			 /**Initialzies Server**/
 			 try {
 					sock = new Socket("127.0.0.1",50000);
@@ -190,9 +185,10 @@ public class Ballot extends JFrame implements ActionListener{
 			 	} catch (IOException e) {
 					e.printStackTrace();
 				}
-		 }
+	    	}
 	    
-	    public void shutdown(){
+	    public void shutdown()
+	    {
 			   try {
 					pwOut.writeObject("<shutdown>");
 					System.exit(0);
@@ -200,16 +196,33 @@ public class Ballot extends JFrame implements ActionListener{
 					e1.printStackTrace();
 				}
 		   }
-	    
+	    /** <<<SERVER CONNECTOIN  <updateSummary>
+	     *  Takes in a Voter's ID | sends ID to server | updates summary statistics |
+	     *  @param ID - ID for voter*/
+	    public void updateSummaryStatistics(User ID)
+		{
+	    	for(String d: user.dataSet())
+			{
+				try 
+				{
+					pwOut.writeObject("<updateSummary>");
+					pwOut.writeObject(d);
+				} 	
+				catch (IOException e) {	e.printStackTrace();	
+				}
+			}
+		}    
     /**<<<SERVER CONNECTOIN  <vote> >>>
  	  * saves user's candidate vote to server
  	  * **/  
-	   public void addVotes(String race, int selectedIndex){
-		   try {
+	   public void addVotes(String race, int selectedIndex, String ID){
+		   try 
+		   {
 	 	    	pwOut.writeObject("<vote>");
 	 	    	pwOut.writeObject(race);
 				pwOut.writeObject(selectedIndex);
 				pwOut.writeObject(user.username);
+				pwOut.writeObject(ID);
 				confirm.setVisible(false);
 			} catch (IOException j) 
 		   	{
@@ -222,7 +235,8 @@ public class Ballot extends JFrame implements ActionListener{
  	  * **/        
 	    public void saveBallot(){
 	    	
-  	 	    try {
+  	 	    try 
+  	 	    {
 	 	    	pwOut.writeObject("<saveballot>");
 				pwOut.writeObject(panels);
 			

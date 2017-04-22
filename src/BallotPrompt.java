@@ -115,7 +115,7 @@ public class BallotPrompt extends JFrame implements ActionListener {
     	if(e.getActionCommand().equals("confirm")){
     		String[] candArray = candidates.getText().split(",");
     		
-    		List<Candidate> c = Candidate.createCandidates(candArray);
+    		List<Candidate> c = Candidate.createCandidates(candArray, race.getText());
     		
     		JPanel temp = new JPanel();
     		p = new RacePanel(temp, race.getText(), c);

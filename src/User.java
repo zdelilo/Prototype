@@ -17,8 +17,7 @@ public abstract class User implements java.io.Serializable{
 	String major;
 	String college;
 	String electionName;
-	
-	
+		
 	User(String username, String password, String gender, 
 		 String rank,     String major,    String college){
 		

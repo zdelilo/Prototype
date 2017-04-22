@@ -21,7 +21,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
 public class ElectionInterface extends JFrame implements ActionListener{
-	
+
+	private static final long serialVersionUID = 1L;
 	DefaultListModel<String> model = new DefaultListModel<String>();
 	JList<String> list = new JList<String>(model);
 	Election[] elections;
