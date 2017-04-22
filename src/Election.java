@@ -11,7 +11,7 @@ public class Election  implements java.io.Serializable{
 	 HashMap<String, String[]> IDStatistics;    /**VoterID -> Statistics**/   
 	 HashMap<String, List<Candidate>> voterIDs; /**VoterIDs -> Candidates**/ 
 	 HashMap<String, List<Candidate>> votes;	/**Race -> Candidates**/
-	 HashMap<String, Integer> summaryStatistcs ;/**UserName -> SummaryStatistics**/
+	 HashMap<String, Integer> summaryStatistcs; /**UserName -> SummaryStatistics**/
 	
 	public Election(String title)
 	{

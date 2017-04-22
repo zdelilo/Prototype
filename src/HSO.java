@@ -1,3 +1,4 @@
+import java.io.IOException;
 
 /**
  * @author CodeFather
@@ -12,7 +13,12 @@ public class HSO extends User{
 	}
 
 	public void UserGUI(User user) {
-		new HSOInterface();
+		try {
+			new HSOInterface();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
