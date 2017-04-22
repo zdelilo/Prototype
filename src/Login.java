@@ -43,7 +43,6 @@ public class Login extends JFrame implements ActionListener{
 				pwOut = new ObjectOutputStream(sock.getOutputStream());
 				brIn = new ObjectInputStream(sock.getInputStream());    	
 			} catch (IOException e) {
-				
 				e.printStackTrace();
 			}
 

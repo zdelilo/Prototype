@@ -50,9 +50,6 @@ public class Candidate implements java.io.Serializable {
 	
 	/**
 	 * Helper method for retrieving candidates from a list of candidates
-	 * 		|Searches for candidate name
-	 * 		|if found return name of candidate
-	 * 		|else returns nulll
 	 * 
 	 * @param candidates - list of candidates to be searched
 	 * @param search	 - search key (name of candidate{
@@ -62,7 +59,7 @@ public class Candidate implements java.io.Serializable {
 		
 		for(Candidate name : candidates)
 		{
-			if(name.getName().equals(search))
+			if(name.name.trim().equals(search))
 				result = name;
 		}
 		return result;
@@ -70,10 +67,8 @@ public class Candidate implements java.io.Serializable {
 	
 	/**
 	 * Helper method which takes in a list of candidates and determines 
-	 * if a candidat is present
-	 * 	  	|Searches for candidate name
-	 * 		|if found return true
-	 * 		|else returns false
+	 * if a candidate is present
+
 	 * @param candidates - list of candidates to be searched
 	 * @param search	 - search key (name of candidate
 	 * @return*/
@@ -81,8 +76,9 @@ public class Candidate implements java.io.Serializable {
 		boolean result = false;
 		for(Candidate name : candidates)
 		{
-			if(name.getName().equals(search))
+			if(name.name.trim().equals(search)){
 				result =  true;
+			}
 		}
 		return result;
 	}

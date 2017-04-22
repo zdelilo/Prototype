@@ -171,8 +171,7 @@ public class Ballot extends JFrame implements ActionListener{
 	    }
 	    public void updateSummaryStatistics(User user)
 		{
-			String[] data = user.toString().split(" ");
-	    	for(String d:data)
+	    	for(String d: user.dataSet())
 			{
 				try 
 				{

@@ -70,7 +70,8 @@ public class MyVoteHandler extends Thread {
 				break;
 				
 			case "<disqualify>":
-				pwOut.writeObject(server.getTally(myVoteCommands[1],myVoteCommands[2],myVoteCommands[3]));
+				pwOut.writeObject(server.removeVote(myVoteCommands[1],myVoteCommands[2],myVoteCommands[3]));
+				
 			break;
 			
 			case "<certify>":
@@ -98,7 +99,7 @@ public class MyVoteHandler extends Thread {
 			break;
 			case "<updateSummary>":
 				String data = (String)brIn.readObject();
-				server.updateSummaryStatistics(data);
+				server.updateSummaryStatistics(data,true);
 			break;
 			case "<getStatistics>":
 				pwOut.writeObject(server.getStatistics());

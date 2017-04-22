@@ -12,7 +12,12 @@ public class ElectionCommissioner extends User  implements java.io.Serializable 
 		super(username, password, gender, rank, major, college);
 
 	}
+	
+	ElectionCommissioner(String username, String password, String electionName){
+		super(username, password, electionName);
 
+	}
+	
 	public void UserGUI(User user) {
 		new BallotPrompt();
 	}

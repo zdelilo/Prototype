@@ -115,12 +115,14 @@ public class MyVoteServer extends Thread  {
 	 * 		| increments the statistic for the election
 	 * @param data - statistic to be incremented
 	 */
-	public void updateSummaryStatistics(String data){
+	public void updateSummaryStatistics(String data, boolean add){
 
 		if(election.summaryStatistcs != null && election.summaryStatistcs.containsKey(data)){
-			System.out.println("if summary statistics");
 			int value = election.summaryStatistcs.get(data.trim()).intValue();
+			if(add == true)
 			election.summaryStatistcs.put(data.trim(), value+1);
+			else	
+			election.summaryStatistcs.put(data.trim(), value-1);
 		}
 		else election.summaryStatistcs.put(data, 1);
 		backup();
@@ -187,48 +189,48 @@ public class MyVoteServer extends Thread  {
 	 * @param candidateName - name of the candidate who's tally must be decremented
 	 * @return
 	 */
-	public String getTally(String userName,String raceName,String candidateName){
-
+	public String removeVote(String userName,String raceName,String candidateName)
+	{
 		List<Candidate>candidates = election.votes.get(raceName);
-		int beforeTally = 0;
-		int afterTally = 0;
-		
+		System.out.println(candidates);
 		if(Candidate.contains(candidates, candidateName))
 		{	
-			beforeTally = Candidate.getCandidate(candidates, candidateName).getTally();
-			Candidate.getCandidate(candidates, candidateName).decrementTally();
-			afterTally = Candidate.getCandidate(candidates, candidateName).getTally();
+			Candidate.getCandidate(candidates, candidateName).decrementTally();	
+			removeUserStatistics(userName);
+			return "Disqualified: " + candidateName;
 		}
-		if((beforeTally - afterTally) >0){
-			backup();
-			return "Disqualified";
-		}
+		
 		else return "Not Disqualified. Please check the values.";
-		
-		
+	}
+	
+	public void removeUserStatistics(String userName)
+	{
+		User removeUser = users.get(userName);
+
+		for(String data: removeUser.dataSet())
+			updateSummaryStatistics(data, false);
 	}
 	
 	/**
 	 * Serializes/saves the server's "ballot" >>> ballot panels
-	 * and current votes
-	 **/
+	 * and current votes **/
 	public static void backup(){
-		
-		try{	
+		try
+		{	
 			ObjectOutputStream apiOut = new ObjectOutputStream(new FileOutputStream("BackupAPI.ser"));
 			apiOut.writeObject(elections);
 			apiOut.close();
 			System.out.println("Backup Complete!");
-
-		}catch(IOException e){
+		}
+		catch(IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
 	
 	/**
 	 * deserializes/restores the servers "ballot" >>> Votes holds 
-	 * races and Candidates necessary to re-build a ballot
-	 **/
+	 * races and Candidates necessary to re-build a ballot**/
 	@SuppressWarnings("unchecked")
 	public static void restore(){
 		
