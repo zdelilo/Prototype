@@ -7,8 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 public class ElectionPrompt extends JFrame implements ActionListener{
-	
-	 /**Server Stuff**/
+
+	private static final long serialVersionUID = 1L;
+	/**Server Stuff**/
 	ObjectInputStream brIn;
 	ObjectOutputStream pwOut;	
 	Socket sock;
@@ -89,9 +90,8 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 			
 			String electionName = txtElectionName.getText();
 			String commissionerID = txtCommissionerID.getText();
-			
-			election.addList(electionName);
 			election.addCommissioner(commissionerID, electionName);
+			election.addList(electionName);
 			eInterface.addElection(electionName);
 			this.setVisible(false);
 			uploadElection(eInterface);
@@ -104,7 +104,7 @@ public class ElectionPrompt extends JFrame implements ActionListener{
 	public void uploadElection(ElectionInterface e){
 		try {
 			pwOut.writeObject("<addElection>");
-			pwOut.writeObject(new Election(txtElectionName.getText(), txtCommissionerID.getText()));	
+			pwOut.writeObject(new Election(txtElectionName.getText()));	
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
